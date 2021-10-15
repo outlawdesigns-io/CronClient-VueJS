@@ -18,9 +18,11 @@ const state = {
 // const getters = {};
 const actions = {
   authenticate({commit},payload){
-    AuthRepository.authenticate(payload.username,payload.password).then(function(response){
+    AuthRepository.authenticate(payload.username,payload.password).then((response)=>{
+      console.log(response.data);
       if(!response.data['error']){
         commit('setAuthToken',response.data.token);
+        this.dispatch('getJobs');
         router.push('home');
       }else{
         console.log(response.data);
@@ -49,7 +51,6 @@ const actions = {
     JobRepository.setAuthToken(this.state.auth_token);
     JobRepository.get().then((response)=>{
       response.data.forEach((job)=>{
-        console.log(job.id);
         this.dispatch('getLastExecution',job);
       });
     }).catch((err)=>{
