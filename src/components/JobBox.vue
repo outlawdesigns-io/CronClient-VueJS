@@ -13,28 +13,30 @@
     <b-collapse :id="'accordion-' + job.id" visible accordion="my-accordion" role="tabpanel">
       <b-card-body>
         <!-- <b-card-text>accordion {{job.id}} text</b-card-text> -->
-        <table class="table table-bordered">
-          <thead></thead>
-          <tbody>
-            <tr>
-              <td colspan="3">{{job.description}}</td>
-            </tr>
-            <tr>
-              <td>Hostname: {{job.hostname}}</td>
-              <td>User: {{job.user}}</td>
-              <td>Cron Annotation: {{job.cronTime}}</td>
-            </tr>
-            <tr>
-              <td colspan="3">{{job.cmdToExec}}</td>
-            </tr>
-            <tr>
-              <td colspan="3">Outfile: {{job.outfile}}</td>
-            </tr>
-            <tr v-if="job.container">
-              <td colspan="3">Container: {{job.imgName}}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead></thead>
+            <tbody>
+              <tr>
+                <td colspan="3">{{job.description}}</td>
+              </tr>
+              <tr>
+                <td>Hostname: {{job.hostname}}</td>
+                <td>User: {{job.user}}</td>
+                <td>Cron Annotation: {{job.cronTime}}</td>
+              </tr>
+              <tr>
+                <td colspan="3">{{job.cmdToExec}}</td>
+              </tr>
+              <tr>
+                <td colspan="3">Outfile: {{job.outfile}}</td>
+              </tr>
+              <tr v-if="job.container">
+                <td colspan="3">Container: {{job.imgName}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <LastExecution v-bind:execution="job.lastExecution"></LastExecution>
       </b-card-body>
     </b-collapse>

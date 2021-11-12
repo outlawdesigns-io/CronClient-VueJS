@@ -26,7 +26,10 @@ export default {
     }
   },
   methods:{
-    login(){
+    login(event){
+      if(event){
+        event.preventDefault();
+      }
       this.$store.dispatch('authenticate',{username:this.username,password:this.password});
     }
   }
