@@ -10,6 +10,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import store from './Store';
 import router from './Router';
+import './registerServiceWorker'
 
 Vue.use(VueResource)
 
