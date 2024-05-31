@@ -10,6 +10,7 @@ export default {
   },
   setAuthToken(auth_token){
     Repository.defaults.headers.get['auth_token'] = auth_token;
+    Repository.defaults.headers.post['auth_token'] = auth_token;
   },
   get(){
     this.setDomain();
@@ -21,6 +22,8 @@ export default {
   },
   createJob(payload){
     this.setDomain();
-    return Repository.post(`${resource}`,payload);
+    let formData = new FormData();
+    Object.keys(payload).forEach((k)=>{ if (payload[k] !== null) formData.append(k,payload[k]) });
+    return Repository.post(`${resource}`,formData,{headers:{'Content-Type':'multipart/form-data'}});
   }
 }

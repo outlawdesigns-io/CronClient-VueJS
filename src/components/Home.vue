@@ -12,18 +12,21 @@
       </div>
       <div class="col-md-4"></div>
     </div>
+    <SendOutputModal></SendOutputModal>
   </div>
 </template>
 
 <script>
 import JobBox from './JobBox.vue'
 import HelloWorld from './HelloWorld';
+import SendOutputModal from './SendOutputModal.vue';
 
 export default {
   name: 'Home',
   components: {
     JobBox,
-    HelloWorld
+    HelloWorld,
+    SendOutputModal
   },
   computed:{
     jobs(){

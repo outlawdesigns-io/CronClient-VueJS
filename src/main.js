@@ -4,7 +4,7 @@ import App from './App.vue'
 
 import VueResource from 'vue-resource'
 
-import BootstrapVue from "bootstrap-vue"
+import {BootstrapVue, BootstrapVueIcons} from "bootstrap-vue"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -17,6 +17,7 @@ Vue.use(VueResource)
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 
 
 new Vue({
@@ -25,6 +26,6 @@ new Vue({
   router:router,
   created(){
     this.$store.dispatch('verifyToken',{auth_token:this.$cookies.get('auth_token')})
-    //this.$store.dispatch('getJobs');
+    // this.$store.dispatch('getJobs');
   }
 }).$mount('#app')
