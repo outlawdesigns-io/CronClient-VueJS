@@ -13,7 +13,7 @@ Vue.use(Vuex);
 
 const state = {
   data:null,
-  auth_token:'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpcCI6IjE5Mi4xNjguODguMTc2IiwidXNlcm5hbWUiOiJvdXRsYXciLCJsYXQiOm51bGwsImxvbmciOm51bGwsInNhbHQiOjQ4MX0.1xjinl3qOslU3raVRVMNeRCWC9xZsnlmlvmrf2RV_8Y',
+  auth_token:null,
   jobs:[],
   sendOutputModalData:{},
   sendMessageResponse:null

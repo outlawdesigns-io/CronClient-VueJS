@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <NavBar></NavBar>
+    <NavBar v-if="$store.state.auth_token != null"></NavBar>
     <router-view></router-view>
   </div>
 </template>
