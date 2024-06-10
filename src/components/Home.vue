@@ -18,7 +18,7 @@
 
 <script>
 import JobBox from './JobBox.vue'
-import HelloWorld from './HelloWorld';
+import HelloWorld from './HelloWorld.vue';
 import SendOutputModal from './SendOutputModal.vue';
 
 export default {

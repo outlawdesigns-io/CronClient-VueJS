@@ -18,6 +18,9 @@ export default {
 </script>
 
 <style>
+/* @import'~bootstrap/dist/css/bootstrap.css'; */
+@import '/node_modules/bootstrap/dist/css/bootstrap.css';
+@import './assets/styles/style.css';
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -26,8 +29,5 @@ export default {
   color: #2c3e50;
   /* margin-top: 60px; */
 }
-
-@import'~bootstrap/dist/css/bootstrap.css';
-@import './assets/styles/style.css';
 
 </style>

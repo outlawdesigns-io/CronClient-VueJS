@@ -1,7 +1,7 @@
 <template>
   <form>
     <div class="imgcontainer">
-        <img src="http://loe.outlawdesigns.io/Pictures/error/logo.png" alt="avatar" class="avatar">
+        <img src="https://loe.outlawdesigns.io/Pictures/error/logo.png" alt="avatar" class="avatar">
     </div>
     <div class="container">
         <!-- <h5 style="color:red">{{login.errorMsg}}</h5> -->

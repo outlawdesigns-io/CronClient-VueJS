@@ -2,8 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import VueCookies from 'vue-cookies'
 
-import Login from './components/Login'
-import Home from './components/Home'
+import Login from './components/Login.vue'
+import Home from './components/Home.vue'
 
 // import store from './Store';
 
@@ -12,7 +12,7 @@ Vue.use(VueCookies)
 
 const router = new Router({
   mode:'hash',
-  base: process.env.BASE_URL + 'cron/',
+  base: import.meta.env.BASE_URL + 'cron/',
   linkExactActiveClass:'active',
   routes:[
     {path:'/',component:Login},

@@ -99,7 +99,7 @@ export default {
       resultStr:'',
       completionStr:''
     }
-  },
+  }
 
 }
 

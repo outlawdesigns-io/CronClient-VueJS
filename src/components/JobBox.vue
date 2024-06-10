@@ -52,7 +52,7 @@
 <script>
 
 import NextJobCountDown from './NextJobCountDown.vue'
-import LastExecution from './LastExecution'
+import LastExecution from './LastExecution.vue'
 
 export default {
   name: 'JobBox',
