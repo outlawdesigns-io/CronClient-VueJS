@@ -1,6 +1,6 @@
 import Repository from './Repository';
 
-const baseDomain = 'https://api.outlawdesigns.io:9550';
+const baseDomain = process.env.NODE_ENV == 'production' ? 'https://api.outlawdesigns.io:9550':'http://localhost:9550';
 // const baseDomain = 'http://localhost:9550';
 const baseUrl = `${baseDomain}`;
 const resource = '/job';
@@ -25,5 +25,13 @@ export default {
     let formData = new FormData();
     Object.keys(payload).forEach((k)=>{ if (payload[k] !== null) formData.append(k,payload[k]) });
     return Repository.post(`${resource}`,formData,{headers:{'Content-Type':'multipart/form-data'}});
+  },
+  getCrontab(hostname,isImg){
+    this.setDomain();
+    return Repository.get(`${baseUrl}/build/${hostname}/${isImg}`);
+  },
+  getAvgExecutionSeconds(jobId){
+    this.setDomain();
+    return Repository.get(`${resource}/${jobId}/avg`);
   }
 }

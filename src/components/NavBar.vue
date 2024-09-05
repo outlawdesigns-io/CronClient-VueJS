@@ -6,22 +6,25 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item v-b-modal.newJobModal>Add a Job</b-nav-item>
-          <b-nav-item href="#">Build Crontab</b-nav-item>
+          <b-nav-item v-b-modal.crontabModal>Build Crontab</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
     <NewJobModal></NewJobModal>
+    <CrontabModal></CrontabModal>
   </div>
 </template>
 
 <script>
 
 import NewJobModal from './NewJobModal.vue';
+import CrontabModal from './CrontabModal.vue';
 //We want to click the 'Build Crontab' link. It sends a request to server, server sends back a file, downloaded straight to device.
 export default {
   name: 'NavBar',
   components: {
-    NewJobModal
+    NewJobModal,
+    CrontabModal
   },
   computed:{}
 }

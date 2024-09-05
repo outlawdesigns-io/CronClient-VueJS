@@ -16,19 +16,22 @@ const state = {
   auth_token:null,
   jobs:[],
   sendOutputModalData:{},
-  sendMessageResponse:null
+  sendMessageResponse:null,
+  crontab:null
 }
 // const getters = {};
 const actions = {
+  init(){
+    this.dispatch('getJobs');
+  },
   authenticate({commit},payload){
     AuthRepository.authenticate(payload.username,payload.password).then((response)=>{
-      console.log(response.data);
       if(!response.data['error']){
         commit('setAuthToken',response.data.token);
-        this.dispatch('getJobs');
+        this.dispatch('init');
         router.push('home');
       }else{
-        console.log(response.data);
+        throw new Error(`API ${response.data['error']}`);
       }
     }).catch((err)=>{
       throw new Error(`API ${err}`);
@@ -39,14 +42,19 @@ const actions = {
       if(!response.data['error']){
         commit('setAuthToken',response.data.auth_token);
         if(router.currentRoute.path == '/'){
-          this.dispatch('getJobs');
+          this.dispatch('init');
           router.push('home');
         }
       }else{
         router.push('/');
-        console.log(response.data);
+        //console.log(response.data);
       }
     });
+  },
+  devInit({commit}){
+    commit('setAuthToken',12345);
+    this.dispatch('init');
+    router.push('home');
   },
   getJobs(){
     JobRepository.setAuthToken(this.state.auth_token);
@@ -56,13 +64,33 @@ const actions = {
       });
     });
   },
+  getJob({commit},jobId){
+    JobRepository.setAuthToken(this.state.auth_token);
+    return JobRepository.getJob(jobId).then((response)=>{
+      this.dispatch('getLastExecution',response.data);
+    });
+  },
   getLastExecution({commit},job){
     ExecRepository.setAuthToken(this.state.auth_token);
     return ExecRepository.getLast(job.id).then((response)=>{
       if(!response.data['error']){
         job.lastExecution = response.data;
-        commit('addJob',job);
+        this.dispatch('getAvgExecutionSeconds',job);
+        // commit('addJob',job);
       }else if(response.data['error'] == 'No Execution History'){
+        this.dispatch('getAvgExecutionSeconds',job);
+        // commit('addJob',job);
+      }
+      else{
+        throw new Error(`API ${response.data.error}`);
+      }
+    });
+  },
+  getAvgExecutionSeconds({commit},job){
+    JobRepository.setAuthToken(this.state.auth_token);
+    return JobRepository.getAvgExecutionSeconds(job.id).then((response)=>{
+      if(!response.data['error']){
+        job.avgExecutionSeconds = response.data.avg_execution_seconds;
         commit('addJob',job);
       }else{
         throw new Error(`API ${response.data.error}`);
@@ -91,6 +119,28 @@ const actions = {
         throw new Error(`API ${response.data.error}`);
       }
     });
+  },
+  getCrontab({commit},payload){
+    JobRepository.setAuthToken(this.state.auth_token);
+    return JobRepository.getCrontab(payload.hostname,payload.isImg).then((response)=>{
+      if(!response.data['error']){
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'crontab');
+        document.body.appendChild(link);
+        link.click();
+        commit('setCrontab',response.data);
+      }else{
+        throw new Error(`API ${response.data.error}`);
+      }
+      console.log(response);
+    }).catch((err)=>{
+      throw new Error(`API ${err}`);
+    });
+  },
+  emptyCrontab({commit}){
+    commit('emptyCrontab');
   }
 };
 const mutations = {
@@ -100,13 +150,25 @@ const mutations = {
     state.auth_token = token;
   },
   addJob(state,job){
-    state.jobs.push(job);
+    let targetIndex = state.jobs.findIndex((e)=>{ return e.id == job.id });
+    if(targetIndex === -1){
+      state.jobs.push(job);
+    }else{
+      state.jobs.splice(targetIndex,1,job);
+      //state.jobs[targetIndex] = job;
+    }
   },
   setSendOutputModalData(state,job){
     state.sendOutputModalData = job;
   },
   setMessageResponse(state,response){
     state.sendMessageResponse = response;
+  },
+  setCrontab(state,response){
+    state.crontab = response;
+  },
+  emptyCrontab(state){
+    state.crontab = null;
   }
 }
 export default new Vuex.Store({

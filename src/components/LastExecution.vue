@@ -26,6 +26,9 @@
 </template>
 
 <script>
+
+import CommonMethods from '../CommonMethods';
+
 export default {
   name: 'LastExecution',
   props: {
@@ -33,11 +36,7 @@ export default {
   },
   methods:{
     async copyToClipboard(){
-      try{
-        await navigator.clipboard.writeText(this.job.lastExecution.output);
-      }catch(err){
-        alert(err);
-      }
+      CommonMethods.copyToClipboard(this.job.lastExecution.output);
     }
   }
 }

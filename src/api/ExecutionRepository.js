@@ -1,7 +1,6 @@
 import Repository from './Repository';
 
-const baseDomain = 'https://api.outlawdesigns.io:9550';
-// const baseDomain = 'http://localhost:9550';
+const baseDomain = process.env.NODE_ENV == 'production' ? 'https://api.outlawdesigns.io:9550':'http://localhost:9550';
 const baseUrl = `${baseDomain}`;
 const resource = '/execution';
 export default {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal id="sendOutputModal" title="Send Output">
+    <b-modal id="sendOutputModal" title="Send Output" ok-only ok-title="Cancel">
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
         <b-form-group id="toGroup" label="To" label-for="toInput" description="Email address of recipient">
           <b-form-input id="toInput" type="text" placeholder="user@example.com" v-model="form.to" required></b-form-input>

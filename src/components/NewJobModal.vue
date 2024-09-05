@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal id="newJobModal" title="New Job" ok-only ok-variant="secondary" ok-title="Cancel">
+    <b-modal id="newJobModal" title="New Job" ok-only ok-variant="secondary" ok-title="Cancel" size="xl">
       <b-form @submit="onSubmit" @reset="onReset" v-if="show">
         <b-form-group id="titleGroup" label="Title" label-for="titleInput" description="Descriptive name for this job">
           <b-form-input id="titleInput" type="text" placeholder="System Backup" v-model="form.title" required></b-form-input>
@@ -21,7 +21,7 @@
           <b-form-input id="friendlyTimeInput" type="text" placeholder="At 03:00 on Tuesday" v-model="form.friendlyTime" required></b-form-input>
         </b-form-group>
         <b-form-group id="cmdToExecGroup" label="Command to Execute" label-for="cmdToExecInput" description="The command that this job executes">
-          <b-form-input id="cmdToExecInput" type="text" placeholder="dd if=/dev/mmcblk0 of=/mnt/backups/`hostname`.img" v-model="form.cmdToExec" required></b-form-input>
+          <b-form-input id="cmdToExecInput" type="text" placeholder="(time dd if=/dev/mmcblk0 of=/mnt/backups/`hostname`.img)" v-model="form.cmdToExec" required></b-form-input>
         </b-form-group>
         <b-form-group id="containerGroup">
           <b-form-checkbox value="1" v-model="form.container">Container</b-form-checkbox>
@@ -58,7 +58,8 @@ export default {
       try{
         await this.$store.dispatch('createJob',this.form);
         let newJob = this.$store.state.jobs[this.$store.state.jobs.length - 1];
-        this.resultStr = newJob.cronTime + ' ' + '/path/to/cronWrapper.sh ' + newJob.id + ' "(time ' + newJob.cmdToExec + ')" ' + '"' + newJob.outfile + '"';
+        let cronwrapperPath = (newJob.cronWrapperPath ? newJob.cronWrapperPath:'/opt/scripts/') + 'cronWrapper.sh';
+        this.resultStr = `${newJob.cronTime} ${cronWrapperPath} ${newJob.id} ${newJob.cmdToExec} "${newJob.outfile}"`;
         this.completionStr = "Copy and paste the line below into the specified user's cron file.";
       }catch(err){
         this.completionStr = "An error occurred.";

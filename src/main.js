@@ -25,7 +25,7 @@ new Vue({
   store:store,
   router:router,
   created(){
-    this.$store.dispatch('verifyToken',{auth_token:this.$cookies.get('auth_token')})
+    // this.$store.dispatch('verifyToken',{auth_token:this.$cookies.get('auth_token')})
     // this.$store.dispatch('getJobs');
   }
 }).$mount('#app')

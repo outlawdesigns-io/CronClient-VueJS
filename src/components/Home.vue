@@ -20,6 +20,7 @@
 import JobBox from './JobBox.vue'
 import HelloWorld from './HelloWorld.vue';
 import SendOutputModal from './SendOutputModal.vue';
+import CommonMethods from '../CommonMethods';
 
 export default {
   name: 'Home',
@@ -30,9 +31,7 @@ export default {
   },
   computed:{
     jobs(){
-      return this.$store.state.jobs.slice().sort((a,b)=>{
-        return new Date(a.nextRun) - new Date(b.nextRun);
-      });
+      return this.$store.state.jobs.slice().sort(CommonMethods.sortByNextExecution);
     }
   }
 }

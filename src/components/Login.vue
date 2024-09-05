@@ -32,6 +32,9 @@ export default {
       }
       this.$store.dispatch('authenticate',{username:this.username,password:this.password});
     }
+  },
+  created(){
+    process.env.NODE_ENV == 'production' ? this.$store.dispatch('verifyToken',{auth_token:VueCookies.get('auth_token')}):this.$store.dispatch('devInit');
   }
 }
 </script>
