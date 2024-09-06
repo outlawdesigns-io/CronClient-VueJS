@@ -8,7 +8,7 @@
           <span style="">{{job.title}} |</span>
           <!-- <span></span> -->
           <span style=""> {{job.friendlyTime}} |</span>
-          <NextJobCountDown :endDate="nextRun"></NextJobCountDown>
+          <CountDownTimer :endDate="nextRun"></CountDownTimer>
         </b-button>
       </b-card-header>
       <b-collapse :id="'accordion-' + job.id" visible accordion="my-accordion" role="tabpanel">
@@ -35,12 +35,33 @@
                 <tr v-if="job.container">
                   <td colspan="3">Container: {{job.imgName}}</td>
                 </tr>
+                <tr v-if="isOverDue">
+                  <td colspan="3">Overdue By: <CountDownTimer :endDate="job.lastExecution.endTime" countUp></CountDownTimer></td>
+                </tr>
               </tbody>
             </table>
           </div>
           <LastExecution v-if="job.lastExecution" v-bind:job="job"></LastExecution>
           <div v-if="!job.lastExecution">
             <p>No execution history for this job</p>
+          </div>
+          <div>
+            <b-button id="btnDeleteJob" variant="danger" @click="onDelete">Delete</b-button>
+            <b-overlay :show="confirmDelete" no-wrap>
+              <template #overlay>
+                <div v-if="processingDelete">
+                  <b-icon icon="arrow-clockwise" animation="spin" font-scale="4"></b-icon>
+                  <div class="mb-3">Processing...</div>
+                </div>
+                <div v-else>
+                  <p><strong>Delete this job and all execution history?</strong></p>
+                  <div class="d-flex">
+                    <b-button variant="outline-danger" class="mr-3" @click="onCancelDelete">Cancel</b-button>
+                    <b-button variant="outline-success" @click="onDeleteConfirm">Confirm</b-button>
+                  </div>
+                </div>
+              </template>
+            </b-overlay>
           </div>
         </b-card-body>
       </b-collapse>
@@ -51,15 +72,15 @@
 
 <script>
 
-import NextJobCountDown from './NextJobCountDown.vue'
 import LastExecution from './LastExecution.vue'
+import CountDownTimer from './CountDownTimer.vue';
 import { DateTime } from 'luxon'
 
 export default {
   name: 'JobBox',
   components:{
-    NextJobCountDown,
-    LastExecution
+    CountDownTimer,
+    LastExecution,
   },
   props: {
     job:Object
@@ -69,7 +90,8 @@ export default {
       now:DateTime.local(),
       isRepollDelay:false,
       repollOn:false,
-      // timeoutDelay:10000
+      confirmDelete:false,
+      processingDelete:false
     };
   },
   mounted(){
@@ -83,7 +105,20 @@ export default {
     },
     checkExecution(){
       this.$store.dispatch('getJob',this.job.id);
-    }
+    },
+    onDelete(){
+      this.confirmDelete = true;
+    },
+    onDeleteConfirm(){
+      this.processingDelete = true;
+      this.$store.dispatch('deleteJob',this.job.id).then(()=>{
+        this.confirmDelete = false;
+        this.processingDelete = false;
+      })
+    },
+    onCancelDelete(){
+      this.confirmDelete = false;
+    },
   },
   computed:{
     isOverDue(){
@@ -180,5 +215,11 @@ export default {
 }
 .repollingCard{
   border:2px solid red;
+}
+#btnDeleteJob{
+  width:100%
+}
+#divConfirmDelete{
+  text-align: center;
 }
 </style>

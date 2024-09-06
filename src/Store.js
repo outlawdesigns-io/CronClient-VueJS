@@ -107,6 +107,16 @@ const actions = {
       }
     });
   },
+  deleteJob({commit},jobId){
+    JobRepository.setAuthToken(this.state.auth_token);
+    return JobRepository.delete(jobId).then((response)=>{
+      if(!response.data['error']){
+        commit('deleteJob',jobId);
+      }else{
+        throw new Error(`API ${response.data.error}`);
+      }
+    });
+  },
   populateSendOutputModal({commit},job){
     commit('setSendOutputModalData',job);
   },
@@ -157,6 +167,10 @@ const mutations = {
       state.jobs.splice(targetIndex,1,job);
       //state.jobs[targetIndex] = job;
     }
+  },
+  deleteJob(state,jobId){
+    let targetIndex = state.jobs.findIndex((e)=>{ return e.id == jobId });
+    state.jobs.splice(targetIndex,1);
   },
   setSendOutputModalData(state,job){
     state.sendOutputModalData = job;

@@ -26,6 +26,10 @@ export default {
     Object.keys(payload).forEach((k)=>{ if (payload[k] !== null) formData.append(k,payload[k]) });
     return Repository.post(`${resource}`,formData,{headers:{'Content-Type':'multipart/form-data'}});
   },
+  delete(jobId){
+    this.setDomain();
+    return Repository.delete(`${resource}/${jobId}`);
+  },
   getCrontab(hostname,isImg){
     this.setDomain();
     return Repository.get(`${baseUrl}/build/${hostname}/${isImg}`);

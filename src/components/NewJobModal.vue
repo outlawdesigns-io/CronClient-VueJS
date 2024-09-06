@@ -32,6 +32,30 @@
         <b-form-group id="outFileGroup" label="Outfile" label-for="outFileInput" description="The absolute path to the file that will store this job's output">
           <b-form-input id="outFileInput" type="text" v-model="form.outfile" placeholder="/tmp/backup"></b-form-input>
         </b-form-group>
+        <b-form-group id="customPathGroup">
+          <b-form-checkbox v-model="customPath">Custom Path</b-form-checkbox>
+        </b-form-group>
+        <b-form-group id="pathGroup" v-if="customPath">
+          <b-form-input id="pathInput" type="text" v-model="form.pathVariable" placeholder="usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"></b-form-input>
+        </b-form-group>
+        <b-form-group id="customShellGroup">
+          <b-form-checkbox v-model="customShell">Custom Shell</b-form-checkbox>
+        </b-form-group>
+        <b-form-group id="shellGroup" v-if="customShell">
+          <b-form-input id="shellInput" type="text" v-model="form.shell" placeholder="/bin/bash"></b-form-input>
+        </b-form-group>
+        <b-form-group id="specifyTimeZoneGroup">
+          <b-form-checkbox v-model="specifyTimeZone">Specify Time Zone</b-form-checkbox>
+        </b-form-group>
+        <b-form-group id="timeZoneGroup" v-if="specifyTimeZone">
+          <b-form-input id="tzInput" type="text" v-model="form.tz_code" placeholder="America/Chicago"></b-form-input>
+        </b-form-group>
+        <b-form-group id="customCronwrapperGroup">
+          <b-form-checkbox v-model="customCronwrapper">Custom <code>cronWrapper.sh</code> location</b-form-checkbox>
+        </b-form-group>
+        <b-form-group id="cronWrapperGroup" v-if="customCronwrapper">
+          <b-form-input id="cronWrapperInput" type="text" v-model="form.cronWrapperPath" placeholder="/home/user1/"></b-form-input>
+        </b-form-group>
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
@@ -58,8 +82,9 @@ export default {
       try{
         await this.$store.dispatch('createJob',this.form);
         let newJob = this.$store.state.jobs[this.$store.state.jobs.length - 1];
-        let cronwrapperPath = (newJob.cronWrapperPath ? newJob.cronWrapperPath:'/opt/scripts/') + 'cronWrapper.sh';
-        this.resultStr = `${newJob.cronTime} ${cronWrapperPath} ${newJob.id} ${newJob.cmdToExec} "${newJob.outfile}"`;
+        //it'd be better if the default path was coming from the API
+        let cronWrapperPath = (newJob.cronWrapperPath ? newJob.cronWrapperPath:'/opt/scripts/') + 'cronWrapper.sh';
+        this.resultStr = `${newJob.cronTime} ${cronWrapperPath} ${newJob.id} "${newJob.cmdToExec}" "${newJob.outfile}"`;
         this.completionStr = "Copy and paste the line below into the specified user's cron file.";
       }catch(err){
         this.completionStr = "An error occurred.";
@@ -79,7 +104,15 @@ export default {
       this.form.container = 0,
       this.form.imgName = null;
       this.form.outfile = null;
+      this.form.pathVariable = null;
+      this.form.shell = null;
+      this.form.tz_code = null;
+      this.form.cronWrapperPath = null;
       this.show = true;
+      this.customPath = false,
+      this.customShell = false,
+      this.specifyTimeZone = false,
+      this.customCronwrapper = false
     }
   },
   data(){
@@ -94,8 +127,16 @@ export default {
         cmdToExec:null,
         container:0,
         imgName:null,
-        outfile:null
+        outfile:null,
+        pathVariable:null,
+        tz_code:null,
+        shell:null,
+        cronWrapperPath:null
       },
+      customPath:false,
+      customShell:false,
+      specifyTimeZone:false,
+      customCronwrapper:false,
       show:true,
       resultStr:'',
       completionStr:''

@@ -8,10 +8,10 @@
 import { DateTime } from 'luxon'
 
 export default {
-  name: 'CountDownTimer',
+  name: 'OverdueCounter',
 
   props: {
-    endDate: {
+    startDate: {
       type: String,
       required: true
     }
@@ -26,8 +26,8 @@ export default {
 
   computed: {
     timeCalculated () {
-      const endDateDateTimeObj = DateTime.fromMillis(this._parseDate(this.endDate))
-      const theDiff = endDateDateTimeObj.diff(this.now, ['hours', 'minutes', 'seconds'])
+      const startDateDateTimeObj = DateTime.fromMillis(this._parseDate(this.startDate))
+      const theDiff = startDateDateTimeObj.diff(this.now, ['days','hours', 'minutes', 'seconds'])
 
       return `${this._toLocale(theDiff.hours)}:${this._toLocale(theDiff.minutes)}:${this._toLocale(Math.round(theDiff.seconds))}`
     }
@@ -35,34 +35,29 @@ export default {
   methods:{
     _parseDate(dateStr){
       return Date.parse(dateStr)
-      //return [dateStr.slice(0, 3), ", ", dateStr.slice(4)].join('').replace(/-.*/,"");
     },
     _toLocale(number){
       return number.toLocaleString('en-US', {minimumIntegerDigits: 2,useGrouping: false});
     },
-    _countDownInterval(endDateTimeObj){
+    _countInterval(startDateTimeObj){
       return ()=>{
         this.now = DateTime.local();
-        /*if (this.now > endDateTimeObj) {
-          this.now = endDateTimeObj;
-          clearInterval(this.timer);
-        }*/
       }
     }
   },
 
   watch: {
-    endDate: {
+    startDate: {
       immediate: true,
 
-      handler (endDateTimeStr) {
-        const endDateTimeObj = DateTime.fromMillis(this._parseDate(endDateTimeStr))
+      handler (startDateTimeStr) {
+        const startDateTimeObj = DateTime.fromMillis(this._parseDate(startDateTimeStr))
 
         if (this.timer) {
           clearInterval(this.timer)
         }
 
-        this.timer = setInterval(this._countDownInterval(endDateTimeObj), 1000);
+        this.timer = setInterval(this._countInterval(startDateTimeObj), 1000);
       }
     }
   },
