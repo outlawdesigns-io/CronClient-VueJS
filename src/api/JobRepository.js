@@ -1,6 +1,7 @@
 import Repository from './Repository';
 
-const baseDomain = process.env.NODE_ENV == 'production' ? 'https://api.outlawdesigns.io:9550':'http://localhost:9550';
+const baseDomain = `${AppConfig[process.env.NODE_ENV].CRON_SERVICE_BASE}:${AppConfig[process.env.NODE_ENV].CRON_SERVICE_PORT}`;
+// const baseDomain = process.env.NODE_ENV == 'production' ? 'https://api.outlawdesigns.io:9550':'http://localhost:9550';
 // const baseDomain = 'http://localhost:9550';
 const baseUrl = `${baseDomain}`;
 const resource = '/job';

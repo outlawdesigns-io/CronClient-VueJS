@@ -1,6 +1,8 @@
 import Repository from './Repository';
+import AppConfig from '../AppConfig';
 
-const baseDomain = 'https://api.outlawdesigns.io:9661';
+// const baseDomain = 'https://api.outlawdesigns.io:9661';
+const baseDomain = `${AppConfig[process.env.NODE_ENV].AUTH_SERVICE_BASE}:${AppConfig[process.env.NODE_ENV].AUTH_SERVICE_PORT}`;
 const baseUrl = `${baseDomain}`;
 const authenticate = '/authenticate';
 const verify = '/verify';
