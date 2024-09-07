@@ -11,7 +11,7 @@ export default{
     CRON_SERVICE_BASE:'localhost',
     CRON_SERVICE_PORT:9550,
     MSG_SERVICE_BASE:'localhost',
-    MSG_SERVICE_PORT:9667
+    MSG_SERVICE_PORT:9667,
     AUTH_SERVICE_BASE:'localhost',
     AUTH_SERVICE_PORT:9661
   },
@@ -19,7 +19,7 @@ export default{
     CRON_SERVICE_BASE:'https://api.outlawdesigns.io',
     CRON_SERVICE_PORT:9550,
     MSG_SERVICE_BASE:'https://api.outlawdesigns.io',
-    MSG_SERVICE_PORT:9667
+    MSG_SERVICE_PORT:9667,
     AUTH_SERVICE_BASE:'https://api.outlawdesigns.io',
     AUTH_SERVICE_PORT:9661
   }
