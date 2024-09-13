@@ -7,6 +7,6 @@ RUN npm install -g http-server
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build --mode $ENV
+RUN npm run build -- --mode $ENV
 EXPOSE 8080
 CMD ["http-server","dist"]
