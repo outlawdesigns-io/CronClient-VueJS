@@ -5,12 +5,13 @@
   "scripts": {
     "serve": "vite preview",
     "build": "vite build",
-    "build-dev":"vite build --mode development",
-    "build-prod":"vite build --base=/cron/",
+    "build-dev": "vite build --mode development",
+    "build-prod": "vite build --base=/cron/",
     "dev": "vite",
-    "test":"echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@outlawdesigns/cronmonitor-rest-client": "^1.0.2",
     "axios": "^0.21.1",
     "bootstrap-vue": "^2.21.2",
     "luxon": "^2.0.1",
@@ -22,8 +23,8 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^1.6.1",
     "vite": "^2.5.4",
-    "vite-plugin-vue2": "^1.9.0",
-    "@vitejs/plugin-vue": "^1.6.1"
+    "vite-plugin-vue2": "^1.9.0"
   }
 }

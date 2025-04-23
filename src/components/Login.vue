@@ -15,6 +15,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'Login',
   props: {},
@@ -34,7 +35,11 @@ export default {
     }
   },
   created(){
-    process.env.NODE_ENV == 'production' ? this.$store.dispatch('verifyToken',{auth_token:VueCookies.get('auth_token')}):this.$store.dispatch('devInit');
+    if(process.env.NODE_ENV == 'production' && VueCookies.isKey('auth_token')){
+      this.$store.dispatch('verifyToken');
+    }else if(process.env.NODE_ENV != 'production'){
+      this.$store.dispatch('devInit');
+    }
   }
 }
 </script>

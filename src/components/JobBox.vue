@@ -205,7 +205,7 @@ export default {
 .yellowDot {
   height: 25px;
   width: 25px;
-  background-color: #d4ff00;
+  background-color: #edf505;
   border-radius: 50%;
   display: inline-block;
   float:left;

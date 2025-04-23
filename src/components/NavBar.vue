@@ -19,7 +19,6 @@
 
 import NewJobModal from './NewJobModal.vue';
 import CrontabModal from './CrontabModal.vue';
-//We want to click the 'Build Crontab' link. It sends a request to server, server sends back a file, downloaded straight to device.
 export default {
   name: 'NavBar',
   components: {

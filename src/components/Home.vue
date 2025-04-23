@@ -3,14 +3,12 @@
     <img alt="Vue logo" src="../assets/turtle_man.png">
     <HelloWorld msg="Cron Monitor"/>
     <div class="row">
-      <div class="col-md-4"></div>
-      <div class="col-md-4">
+      <div class="col-md-12">
         <JobBox
         v-for="job in jobs"
         v-bind:key="job.id"
         v-bind:job="job"></JobBox>
       </div>
-      <div class="col-md-4"></div>
     </div>
     <SendOutputModal></SendOutputModal>
   </div>
