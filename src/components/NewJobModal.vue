@@ -33,19 +33,19 @@
           <b-form-input id="outFileInput" type="text" v-model="form.outfile" placeholder="/tmp/backup"></b-form-input>
         </b-form-group>
         <b-form-group id="customPathGroup">
-          <b-form-checkbox v-model="customPath">Custom Path</b-form-checkbox>
+          <b-form-checkbox v-model="customPath">Custom <code>PATH</code></b-form-checkbox>
         </b-form-group>
         <b-form-group id="pathGroup" v-if="customPath">
           <b-form-input id="pathInput" type="text" v-model="form.pathVariable" placeholder="usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"></b-form-input>
         </b-form-group>
         <b-form-group id="customShellGroup">
-          <b-form-checkbox v-model="customShell">Custom Shell</b-form-checkbox>
+          <b-form-checkbox v-model="customShell">Custom <code>SHELL</code></b-form-checkbox>
         </b-form-group>
         <b-form-group id="shellGroup" v-if="customShell">
           <b-form-input id="shellInput" type="text" v-model="form.shell" placeholder="/bin/bash"></b-form-input>
         </b-form-group>
         <b-form-group id="specifyTimeZoneGroup">
-          <b-form-checkbox v-model="specifyTimeZone">Specify Time Zone</b-form-checkbox>
+          <b-form-checkbox v-model="specifyTimeZone">Specify <code>TZ</code></b-form-checkbox>
         </b-form-group>
         <b-form-group id="timeZoneGroup" v-if="specifyTimeZone">
           <b-form-input id="tzInput" type="text" v-model="form.tz_code" placeholder="America/Chicago"></b-form-input>
@@ -63,6 +63,8 @@
         <p>{{completionStr}}</p>
         <code>{{resultStr}}</code>
         <br><br>
+        <p>Remember to ensure that <a :href="gistUrl" target="_blank">cronWrapper.sh</a> is configured on the host.</p>
+        <br><br>
         <b-button @click="onReset" variant="danger">Reset</b-button>
       </div>
     </b-modal>
@@ -70,7 +72,7 @@
 </template>
 
 <script>
-
+import AppConfig from '../AppConfig';
 export default {
   name:'NewJobModal',
   components:{},
@@ -85,7 +87,7 @@ export default {
         //it'd be better if the default path was coming from the API
         let cronWrapperPath = (newJob.cronWrapperPath ? newJob.cronWrapperPath:'/opt/scripts/') + 'cronWrapper.sh';
         this.resultStr = `${newJob.cronTime} ${cronWrapperPath} ${newJob.id} "${newJob.cmdToExec}" "${newJob.outfile}"`;
-        this.completionStr = "Copy and paste the line below into the specified user's cron file.";
+        this.completionStr = "Copy and paste the line below into the specified user's cron file";
       }catch(err){
         this.completionStr = "An error occurred.";
         this.resultStr = err;
@@ -139,7 +141,8 @@ export default {
       customCronwrapper:false,
       show:true,
       resultStr:'',
-      completionStr:''
+      completionStr:'',
+      gistUrl:AppConfig[process.env.NODE_ENV].GIST_URL
     }
   }
 

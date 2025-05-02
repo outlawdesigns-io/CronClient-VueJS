@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@outlawdesigns/cronmonitor-rest-client": "^1.0.2",
+    "@outlawdesigns/cronmonitor-rest-client": "^1.0.4",
     "axios": "^0.21.1",
     "bootstrap-vue": "^2.21.2",
     "luxon": "^2.0.1",

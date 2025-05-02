@@ -21,14 +21,22 @@ const state = {
   isAuthenticated:false,
   data:null,
   jobs:[],
+  events:[],
+  eventSubscriptions:[],
   sendOutputModalData:{},
   sendMessageResponse:null,
-  crontab:null
+  crontab:null,
+  patternTestResults:{
+    pattern:null,
+    next:null,
+  }
 }
 // const getters = {};
 const actions = {
   init({commit}){
     commit('setIsAuthenticated',true);
+    this.dispatch('getEvents');
+    this.dispatch('getEventSubscriptions');
     this.dispatch('getJobs');
   },
   authenticate({commit},payload){
@@ -95,6 +103,12 @@ const actions = {
       }
     });
   },
+  getNextExecution({commit},job){
+    return cronClient.get().executions.next(job.id).then((response)=>{
+      job.nextRun = response.next;
+      this.dispatch('getLastExecution',job);
+    });
+  },
   createJob({commit},job){
     return cronClient.get().jobs.create(job).then((response)=>{
       if(!response.error){
@@ -111,6 +125,53 @@ const actions = {
       }else{
         throw new Error(`API ${response.error}`);
       }
+    });
+  },
+  disableJob({commit},jobId){
+    return cronClient.get().jobs.update(jobId,{disabled:1}).then((response)=>{
+      if(!response.error){
+        commit('addJob',response);
+      }else{
+        throw new Error(`API ${response.error}`);
+      }
+    });
+  },
+  enableJob({commit},jobId){
+    return cronClient.get().jobs.update(jobId,{disabled:0}).then((response)=>{
+      if(!response.error){
+        this.dispatch('getJob',jobId);
+      }else{
+        throw new Error(`API ${response.error}`);
+      }
+    });
+  },
+  getEvents({commit}){
+    return cronClient.get().events.getAll().then((response)=>{
+      response.forEach((e)=>{
+        commit('addEvent',e);
+      });
+    });
+  },
+  getEventSubscriptions({commit}){
+    return cronClient.get().subscriptions.getAll().then((response)=>{
+      response.forEach((e)=>{
+        commit('addSubscription',e);
+      });
+    });
+  },
+  createEvenSubscription({commit},payload){
+    return cronClient.get().subscriptions.create(payload).then((response)=>{
+      commit('addSubscription',response);
+    });
+  },
+  updateEventSubscription({commit},payload){
+    return cronClient.get().subscriptions.update(payload.id,payload).then((response)=>{
+      commit('updateSubscription',response);
+    });
+  },
+  deleteEventSubscription({commit},id){
+    return cronClient.get().subscriptions.delete(id).then((response)=>{
+      commit('deleteSubscription',id);
     });
   },
   populateSendOutputModal({commit},job){
@@ -139,13 +200,22 @@ const actions = {
       }else{
         throw new Error(`API ${response.error}`);
       }
-      console.log(response);
     }).catch((err)=>{
       throw new Error(`API ${err}`);
     });
   },
   emptyCrontab({commit}){
     commit('emptyCrontab');
+  },
+  testCronPattern({commit},payload){
+    return cronClient.get().executions.nextPattern(payload).then((response)=>{
+      commit('setPatternResults',response);
+    }).catch((err)=>{
+      throw new Error(`API ${err}`);
+    });
+  },
+  emptyPatternResults({commit}){
+    commit('emptyPatternResults');
   }
 };
 const mutations = {
@@ -161,9 +231,23 @@ const mutations = {
       //state.jobs[targetIndex] = job;
     }
   },
+  addEvent(state,event){
+    state.events.push(event);
+  },
+  addSubscription(state,eventSubscription){
+    state.eventSubscriptions.push(eventSubscription);
+  },
   deleteJob(state,jobId){
     let targetIndex = state.jobs.findIndex((e)=>{ return e.id == jobId });
     state.jobs.splice(targetIndex,1);
+  },
+  updateSubscription(state,eventSubscription){
+    let targetIndex = state.eventSubscriptions.findIndex(e => e.id == eventSubscription.id);
+    state.eventSubscriptions.splice(targetIndex,1,eventSubscription);
+  },
+  deleteSubscription(state,id){
+    let targetIndex = state.eventSubscriptions.findIndex((e)=>{ return e.id == id});
+    state.eventSubscriptions.splice(targetIndex,1);
   },
   setSendOutputModalData(state,job){
     state.sendOutputModalData = job;
@@ -176,6 +260,13 @@ const mutations = {
   },
   emptyCrontab(state){
     state.crontab = null;
+  },
+  setPatternResults(state,responseObj){
+    state.patternTestResults = responseObj;
+  },
+  emptyPatternResults(state){
+    state.patternTestResults.pattern = null;
+    state.patternTestResults.next = null;
   }
 }
 export default new Vuex.Store({

@@ -2,25 +2,28 @@ export default{
   development:{
     CRON_SERVICE_BASE:'http://localhost',
     CRON_SERVICE_PORT:9550,
-    MSG_SERVICE_BASE:'https://api.outlawdesigns.io',
+    MSG_SERVICE_BASE:'http://localhost',
     MSG_SERVICE_PORT:9667,
-    AUTH_SERVICE_BASE:'https://ubuntuserver.outlawdesigns.io',
-    AUTH_SERVICE_PORT:9661
+    AUTH_SERVICE_BASE:'http://localhost',
+    AUTH_SERVICE_PORT:9661,
+    GIST_URL:'https://gist.github.com/outlawstar4761/a1105f79ba4cd26916abce8a0f3bb139'
   },
   testing:{
-    CRON_SERVICE_BASE:'localhost',
+    CRON_SERVICE_BASE:'http://localhost',
     CRON_SERVICE_PORT:9550,
-    MSG_SERVICE_BASE:'localhost',
+    MSG_SERVICE_BASE:'http://localhost',
     MSG_SERVICE_PORT:9667,
-    AUTH_SERVICE_BASE:'localhost',
-    AUTH_SERVICE_PORT:9661
+    AUTH_SERVICE_BASE:'http://localhost',
+    AUTH_SERVICE_PORT:9661,
+    GIST_URL:'https://gist.github.com/outlawstar4761/a1105f79ba4cd26916abce8a0f3bb139'
   },
   production:{
-    CRON_SERVICE_BASE:'https://ubuntuserver.outlawdesigns.io',
+    CRON_SERVICE_BASE:'http://localhost',
     CRON_SERVICE_PORT:9550,
-    MSG_SERVICE_BASE:'https://api.outlawdesigns.io',
+    MSG_SERVICE_BASE:'http://localhost',
     MSG_SERVICE_PORT:9667,
-    AUTH_SERVICE_BASE:'https://ubuntuserver.outlawdesigns.io',
-    AUTH_SERVICE_PORT:9661
+    AUTH_SERVICE_BASE:'http://localhost',
+    AUTH_SERVICE_PORT:9661,
+    GIST_URL:'https://gist.github.com/outlawstar4761/a1105f79ba4cd26916abce8a0f3bb139'
   }
 }

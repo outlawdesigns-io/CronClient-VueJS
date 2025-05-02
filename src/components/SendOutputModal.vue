@@ -6,7 +6,7 @@
           <b-form-input id="toInput" type="text" placeholder="user@example.com" v-model="form.to" required></b-form-input>
         </b-form-group>
         <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button v-el:resetBtn type="reset" variant="danger">Reset</b-button>
+        <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
       <div v-if="!show">
         <p>{{completionStr}}</p>

@@ -6,9 +6,8 @@
           <!-- v-on:click="getLastExecution" -->
           <span class="dot" v-bind:class="[dotClass]"></span>
           <span style="">{{job.title}} |</span>
-          <!-- <span></span> -->
-          <span style=""> {{job.friendlyTime}} |</span>
           <CountDownTimer :endDate="nextRun"></CountDownTimer>
+          <span style="">( {{job.friendlyTime}} )</span>
         </b-button>
       </b-card-header>
       <b-collapse :id="'accordion-' + job.id" visible accordion="my-accordion" role="tabpanel">
@@ -36,7 +35,7 @@
                   <td colspan="3">Container: {{job.imgName}}</td>
                 </tr>
                 <tr v-if="isOverDue">
-                  <td colspan="3">Overdue By: <CountDownTimer :endDate="job.lastExecution.endTime" countUp></CountDownTimer></td>
+                  <td colspan="3">Overdue By: <CountDownTimer :endDate="overDueBy" countUp></CountDownTimer></td>
                 </tr>
               </tbody>
             </table>
@@ -46,7 +45,9 @@
             <p>No execution history for this job</p>
           </div>
           <div>
-            <b-button id="btnDeleteJob" variant="danger" @click="onDelete">Delete</b-button>
+            <b-button id="btnCheckNow" class="longBtn" variant="success" v-if="isRepollDelay || repollOn" v-on:click="checkExecution">Check Now</b-button>
+            <b-button id="btnDisableJob" class="longBtn" variant="warning" @click="onDisable">Disable</b-button>
+            <b-button id="btnDeleteJob" class="longBtn" variant="danger" @click="onDelete">Delete</b-button>
             <b-overlay :show="confirmDelete" no-wrap>
               <template #overlay>
                 <div v-if="processingDelete">
@@ -58,6 +59,21 @@
                   <div class="d-flex">
                     <b-button variant="outline-danger" class="mr-3" @click="onCancelDelete">Cancel</b-button>
                     <b-button variant="outline-success" @click="onDeleteConfirm">Confirm</b-button>
+                  </div>
+                </div>
+              </template>
+            </b-overlay>
+            <b-overlay :show="confirmDisable" no-wrap>
+              <template #overlay>
+                <div v-if="processingDelete">
+                  <b-icon icon="arrow-clockwise" animation="spin" font-scale="4"></b-icon>
+                  <div class="mb-3">Processing...</div>
+                </div>
+                <div v-else>
+                  <p><strong>Disable this job and remove it from reports and apps?</strong></p>
+                  <div class="d-flex">
+                    <b-button variant="outline-danger" class="mr-3" @click="onCancelDisable">Cancel</b-button>
+                    <b-button variant="outline-success" @click="onDisableConfirm">Confirm</b-button>
                   </div>
                 </div>
               </template>
@@ -91,6 +107,7 @@ export default {
       isRepollDelay:false,
       repollOn:false,
       confirmDelete:false,
+      confirmDisable:false,
       processingDelete:false
     };
   },
@@ -109,6 +126,9 @@ export default {
     onDelete(){
       this.confirmDelete = true;
     },
+    onDisable(){
+      this.confirmDisable = true;
+    },
     onDeleteConfirm(){
       this.processingDelete = true;
       this.$store.dispatch('deleteJob',this.job.id).then(()=>{
@@ -116,9 +136,19 @@ export default {
         this.processingDelete = false;
       })
     },
+    onDisableConfirm(){
+      this.processingDelete = true;
+      this.$store.dispatch('disableJob',this.job.id).then(()=>{
+        this.confirmDisable = false;
+        this.processingDelete = false;
+      });
+    },
     onCancelDelete(){
       this.confirmDelete = false;
     },
+    onCancelDisable(){
+      this.confirmDisable = false;
+    }
   },
   computed:{
     isOverDue(){
@@ -150,6 +180,14 @@ export default {
       set(newValue){
         this.job.nextRun = newValue;
       }
+    },
+    overDueBy(){
+      let expected = Date.parse(this.job.lastRun);
+      let actual = Date.parse(this.job.lastExecution.endTime);
+      let now = Date.now();
+      let overDueMs = expected - actual;
+      let overDueDate = new Date(now - overDueMs);
+      return overDueDate.toISOString();
     }
   },
   watch:{
@@ -216,8 +254,9 @@ export default {
 .repollingCard{
   border:2px solid red;
 }
-#btnDeleteJob{
-  width:100%
+.longBtn{
+  width: 100%;
+  margin:.25%;
 }
 #divConfirmDelete{
   text-align: center;

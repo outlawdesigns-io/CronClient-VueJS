@@ -30,11 +30,12 @@ export default {
   computed: {
     timeCalculated () {
       const endDateDateTimeObj = DateTime.fromMillis(this._parseDate(this.endDate))
-      const theDiff = endDateDateTimeObj.diff(this.now, ['hours', 'minutes', 'seconds'])
+      const theDiff = endDateDateTimeObj.diff(this.now, ['days','hours', 'minutes', 'seconds'])
+      let days = this.countUp ? this._toLocale(Math.abs(theDiff.days)):this._toLocale(theDiff.days)
       let hours = this.countUp ? this._toLocale(Math.abs(theDiff.hours)):this._toLocale(theDiff.hours)
       let minutes = this.countUp ? this._toLocale(Math.abs(theDiff.minutes)):this._toLocale(theDiff.minutes)
       let seconds = this.countUp ? this._toLocale(Math.abs(Math.round(theDiff.seconds))):this._toLocale(Math.round(theDiff.seconds))
-      return `${hours}:${minutes}:${seconds}`
+      return `${days}:${hours}:${minutes}:${seconds}`
     }
   },
   methods:{

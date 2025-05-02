@@ -2,7 +2,9 @@
   <div>
     <img alt="Vue logo" src="../assets/turtle_man.png">
     <HelloWorld msg="Cron Monitor"/>
-    <div class="row">
+    <p v-if="!jobs.length">Waiting for data...</p>
+    <b-spinner v-if="!jobs.length" type="grow" label="Spinning"></b-spinner>
+    <div v-if="jobs.length" class="row">
       <div class="col-md-12">
         <JobBox
         v-for="job in jobs"
@@ -29,7 +31,7 @@ export default {
   },
   computed:{
     jobs(){
-      return this.$store.state.jobs.slice().sort(CommonMethods.sortByNextExecution);
+      return this.$store.state.jobs.filter(e => !e.disabled).slice().sort(CommonMethods.sortByNextExecution);
     }
   }
 }
