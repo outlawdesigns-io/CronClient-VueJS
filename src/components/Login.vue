@@ -35,11 +35,24 @@ export default {
     }
   },
   created(){
-    if(process.env.NODE_ENV == 'production' && VueCookies.isKey('auth_token')){
-      this.$store.dispatch('verifyToken');
-    }else if(process.env.NODE_ENV != 'production'){
-      this.$store.dispatch('devInit');
-    }
+    /*
+    maybe move this logic to store?
+      check for cookie.
+      if !exists
+        redirect to kratos
+          client_id: client id of this app
+          response_type: token (what other options I wonder?)
+          redirect_uri (toggle based on env)
+          scope: might be nullable, think more about how you want to implement scopes
+          state: generate a random string. It will be sent back with token. Make sure they match.
+    */
+    this.$store.dispatch('verifyToken');
+    // window.location.href = `http://ubuntuserver.outlawdesigns.io:4444/oauth2/auth?client_id=test-client&response_type=token&redirect_uri=http://localhost:3000&state=123456758`;
+    // if(process.env.NODE_ENV == 'production' && VueCookies.isKey('auth_token')){
+    //   this.$store.dispatch('verifyToken');
+    // }else if(process.env.NODE_ENV != 'production'){
+    //   this.$store.dispatch('devInit');
+    // }
   }
 }
 </script>

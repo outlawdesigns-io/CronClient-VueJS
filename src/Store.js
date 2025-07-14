@@ -5,13 +5,16 @@ import VueCookies from 'vue-cookies'
 import {RepositoryFactory} from './api/RepositoryFactory';
 const MessageRepository = RepositoryFactory.get('message');
 
-import cronClient from  '@outlawdesigns/cronmonitor-rest-client';
+// import cronClient from  '@outlawdesigns/cronmonitor-rest-client';
 
-const authUrl = `${AppConfig[process.env.NODE_ENV].AUTH_SERVICE_BASE}:${AppConfig[process.env.NODE_ENV].AUTH_SERVICE_PORT}`;
+import cronClient from '../../CronMonitorRESTClient-JS/index.js';
+
+const authUrl = `${AppConfig[process.env.NODE_ENV].AUTH_DISCOVERY_URI}`;
+const clientId = `${AppConfig[process.env.NODE_ENV].AUTH_CLIENT_ID}`;
 const apiUrl = `${AppConfig[process.env.NODE_ENV].CRON_SERVICE_BASE}:${AppConfig[process.env.NODE_ENV].CRON_SERVICE_PORT}`;
 
 cronClient.init(apiUrl);
-cronClient.get().auth.init(authUrl);
+await cronClient.get().auth.init(new URL(authUrl),clientId);
 
 import router from './Router';
 
@@ -49,16 +52,31 @@ const actions = {
     });
   },
   verifyToken({commit}){
-    cronClient.get().auth.isTokenValid(VueCookies.get('auth_token')).then((isValid)=>{
-      if(isValid){
-        cronClient.get().setAuthToken(payload.auth_token);
-        if(router.currentRoute.path == '/'){
-          this.dispatch('init');
-          router.push('home');
-        }
-      }
-    }).catch((err)=>{
-      throw new Error(`API ${err.error}`);
+    let accessToken = VueCookies.get('auth_token');
+    if(accessToken === null){
+      cronClient.get().auth.authorizationCodeFlow('http://localhost:3000/token/','').then((challengeResults)=>{
+        const verifier = challengeResults.codeVerifier;
+        const state = challengeResults.state;
+        sessionStorage.setItem('oauth_state', state);
+        sessionStorage.setItem('oauth_code_verifier', verifier);
+        window.location.href = challengeResults.redirectUri;
+        // console.log(challengeResults.redirectUri);
+      });
+    }//else if expired, refresh?
+    /*
+    this.dispatch('init');
+    router.push('home');
+    */
+  },
+  swapAuthorizationCode({commit},authorizationCode){
+    const state = sessionStorage.getItem('oauth_state');
+    const verifier = sessionStorage.getItem('oauth_code_verifier');
+    let url = new URL(window.location.href);
+    if (!url.pathname.endsWith('/')) {
+      url.pathname += '/';
+    }
+    cronClient.get().auth.authorizationCodeToAccessToken(url,sessionStorage.getItem('oauth_state'),sessionStorage.getItem('oauth_code_verifier')).then(()=>{
+      router.push('home');
     });
   },
   devInit({commit}){
