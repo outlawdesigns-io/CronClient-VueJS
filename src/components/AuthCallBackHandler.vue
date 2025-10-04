@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="error.error">
     <h1>If you see this screen something has gone wrong:</h1>
     <h3>{{error.error}}</h3>
     <p>

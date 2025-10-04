@@ -12,6 +12,9 @@
           <b-nav-item v-b-modal.subscriptionModal>Manage Subscriptions</b-nav-item>
           <b-nav-item :href="gistUrl" target="_blank">cronWrapper.sh</b-nav-item>
         </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item right @click="logout">log out</b-nav-item>
+        </b-navbar-nav>
       </b-collapse>
     </b-navbar>
     <NewJobModal></NewJobModal>
@@ -41,6 +44,11 @@ export default {
     DisabledJobsModal
   },
   computed:{},
+  methods:{
+    logout(){
+      this.$store.dispatch('logout');
+    }
+  },
   data(){
     return {
       gistUrl:AppConfig[process.env.NODE_ENV].GIST_URL

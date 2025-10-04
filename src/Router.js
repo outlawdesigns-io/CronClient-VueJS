@@ -18,13 +18,9 @@ const router = new Router({
   routes:[
     {path:'/',component:Login},
     {path:'/home',component:Home},
-    {path:'/token',component:AuthCallBackHandler}
+    {path:'/token',component:AuthCallBackHandler},
+    {path:'/logout',component:Login}
   ]
 });
-
-// router.beforeEach(async(to,from,next)=>{
-//   store.dispatch('verifyToken',{auth_token:this.$cookies.get('auth_token')})
-//   next();
-// });
 
 export default router;
