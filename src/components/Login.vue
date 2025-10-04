@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import AppConfig from '../AppConfig';
 
 export default {
   name: 'Login',
@@ -21,10 +22,14 @@ export default {
 
   },
   created(){
-    try{
-      this.$store.dispatch('verifyToken');
-    }catch(err){
-      alert(err.message);
+    if(AppConfig[process.env.NODE_ENV].AUTH_DISABLED){
+      this.$store.dispatch('devInit');
+    }else{
+      try{
+        this.$store.dispatch('verifyToken');
+      }catch(err){
+        alert(err.message);
+      }
     }
   }
 }

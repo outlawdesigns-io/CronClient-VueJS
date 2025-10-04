@@ -5,9 +5,9 @@ import VueCookies from 'vue-cookies'
 import {RepositoryFactory} from './api/RepositoryFactory';
 const MessageRepository = RepositoryFactory.get('message');
 
-// import cronClient from  '@outlawdesigns/cronmonitor-rest-client';
+import cronClient from  '@outlawdesigns/cronmonitor-rest-client';
 
-import cronClient from '../../CronMonitorRESTClient-JS/index.js';
+// import cronClient from '../../CronMonitorRESTClient-JS/index.js';
 
 const authUrl = `${AppConfig[process.env.NODE_ENV].AUTH_DISCOVERY_URI}`;
 const clientId = `${AppConfig[process.env.NODE_ENV].AUTH_CLIENT_ID}`;
