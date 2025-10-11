@@ -1,0 +1,10 @@
+services:
+  frontend:
+    image: cronclient-vuejs
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+      args:
+        ENV: production
+    ports:
+      - '9551:8080'

@@ -1,3 +1,0 @@
-cronClinetSDK just accepts an accessToken
-authSDK <-- support different types of authorization flows
-            accept token, verifies it and keeps it active
