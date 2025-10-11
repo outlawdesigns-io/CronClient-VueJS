@@ -13,7 +13,8 @@ Vue.use(VueCookies)
 
 const router = new Router({
   mode:'history',
-  base: import.meta.env.BASE_URL + 'cron/',
+  base: import.meta.env.BASE_URL,
+  // base: import.meta.env.BASE_URL + 'cron/',
   linkExactActiveClass:'active',
   routes:[
     {path:'/',component:Login},

@@ -21,5 +21,5 @@ export default defineConfig({
       'top-level-await':true
     }
   },
-  base:'/cron/'
+  // base:'/cron/'
 })
