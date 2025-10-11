@@ -9,4 +9,4 @@ RUN npm install --include=dev
 COPY . .
 RUN npm run build -- --mode $ENV
 EXPOSE 8080
-CMD ["http-server", "-P", "dist"]
+CMD ["http-server", "-P", "http://localhost:8080?", "dist"]
