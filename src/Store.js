@@ -1,4 +1,4 @@
-import AppConfig from './AppConfig';
+import { getConfig } from './runtime-config';
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueCookies from 'vue-cookies'
@@ -6,20 +6,20 @@ import {RepositoryFactory} from './api/RepositoryFactory';
 const MessageRepository = RepositoryFactory.get('message');
 
 import cronClient from  '@outlawdesigns/cronmonitor-rest-client';
-
+import router from './Router';
 // import cronClient from '../../CronMonitorRESTClient-JS/index.js';
 
-const authUrl = `${AppConfig[process.env.NODE_ENV].AUTH_DISCOVERY_URI}`;
-const clientId = `${AppConfig[process.env.NODE_ENV].AUTH_CLIENT_ID}`;
-const apiUrl = `${AppConfig[process.env.NODE_ENV].CRON_SERVICE_BASE}`;
-const apiScope = AppConfig[process.env.NODE_ENV].AUTH_SCOPE;
-const apiRedirectUrl = AppConfig[process.env.NODE_ENV].AUTH_REDIRECT_URL;
-const apiLogoutUrl = AppConfig[process.env.NODE_ENV].AUTH_LOGOUT_URL;
+console.log(getConfig());
+
+const authUrl = getConfig().AUTH_DISCOVERY_URI;
+const clientId = getConfig().AUTH_CLIENT_ID;
+const apiUrl = getConfig().CRON_SERVICE_BASE;
+const apiScope = getConfig().AUTH_SCOPE;
+const apiRedirectUrl = getConfig().AUTH_REDIRECT_URL;
+const apiLogoutUrl = getConfig().AUTH_LOGOUT_URL;
 
 cronClient.init(apiUrl,apiScope);
 await cronClient.get().auth.init(authUrl,clientId);
-
-import router from './Router';
 
 Vue.use(Vuex);
 

@@ -8,8 +8,8 @@
       </thead>
       <tbody>
         <tr>
-          <td>Start: {{job.lastExecution.startTime}}</td>
-          <td>End: {{job.lastExecution.endTime}}</td>
+          <td>Start: {{new Date(job.lastExecution.startTime).toLocaleString()}}</td>
+          <td>End: {{new Date(job.lastExecution.endTime).toLocaleString()}}</td>
         </tr>
         <tr>
           <td colspan="2">

@@ -1,12 +1,31 @@
-FROM node:latest
-WORKDIR /usr/src/app/
-ARG ENV
-ENV TZ=America/Chicago
-ENV NODE_ENV=$ENV
-RUN npm install -g http-server
+# --- Build stage ---
+FROM node:20-bullseye AS build
+WORKDIR /app
+
+# Copy dependencies first for caching
 COPY package*.json ./
-RUN npm install --include=dev
+RUN npm ci
+
+# Copy source code
 COPY . .
-RUN npm run build -- --mode $ENV
+
+# Build the Vite app
+RUN npm run build
+
+# --- Runtime stage ---
+FROM node:20-bullseye
+WORKDIR /app
+
+# Copy built app from build stage
+COPY --from=build /app/dist ./dist
+COPY entrypoint.sh ./entrypoint.sh
+COPY server.js ./server.js
+
+# Install a tiny static server, e.g. serve
+RUN npm install express
+
+# Expose port
 EXPOSE 8080
-CMD ["http-server", "-P", "http://localhost:8080?", "dist"]
+
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["node", "./server.js"]

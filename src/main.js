@@ -8,24 +8,39 @@ import {BootstrapVue, BootstrapVueIcons} from "bootstrap-vue"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-import store from './Store';
+// import store from './Store';
 import router from './Router';
 import './registerServiceWorker'
+import { loadRuntimeConfig, getConfig } from './runtime-config';
 
 Vue.use(VueResource)
-
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 
+//vue3
+/*async function bootstrap() {
+  await loadRuntimeConfig();
 
-new Vue({
-  render: h => h(App),
-  store:store,
-  router:router,
-  created(){
-    // this.$store.dispatch('verifyToken',{auth_token:this.$cookies.get('auth_token')})
-    // this.$store.dispatch('getJobs');
-  }
-}).$mount('#app')
+  const app = createApp(App);
+  // Inject config into store if needed
+  store.runtimeConfig = config;
+  app.use(store);
+  app.mount('#app');
+}
+bootstrap();*/
+
+async function bootstrap() {
+  await loadRuntimeConfig();
+  const store = await import('./Store').then(m => m.default);
+  new Vue({
+    render: h => h(App),
+    store,
+    router,
+    created() {
+    }
+  }).$mount('#app');
+}
+
+bootstrap();

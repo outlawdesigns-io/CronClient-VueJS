@@ -34,9 +34,9 @@
                 <tr v-if="job.container">
                   <td colspan="3">Container: {{job.imgName}}</td>
                 </tr>
-                <tr v-if="isOverDue">
+                <!-- <tr v-if="isOverDue">
                   <td colspan="3">Overdue By: <CountDownTimer :endDate="overDueBy" countUp></CountDownTimer></td>
-                </tr>
+                </tr> -->
               </tbody>
             </table>
           </div>

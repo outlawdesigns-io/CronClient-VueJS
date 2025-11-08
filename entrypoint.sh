@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+cat <<EOF > ./dist/env.js
+window.ENV = {
+  ENV: "${ENV}",
+  TZ: "${TZ}",
+  AUTH_CLIENT_ID: "${AUTH_CLIENT_ID}",
+  CRON_SERVICE_BASE: "${CRON_SERVICE_BASE}",
+  MSG_SERVICE_BASE: "${MSG_SERVICE_BASE}",
+  AUTH_DISCOVERY_URI: "${AUTH_DISCOVERY_URI}",
+  AUTH_REDIRECT_URL: "${AUTH_REDIRECT_URL}",
+  AUTH_LOGOUT_URL: "${AUTH_LOGOUT_URL}",
+  AUTH_SCOPE: "${AUTH_SCOPE}",
+  GIST_URL: "${GIST_URL}",
+  AUTH_DISABLED: "${AUTH_DISABLED}"
+};
+EOF
+
+exec "$@"
