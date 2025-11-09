@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import AppConfig from '../AppConfig';
+import { getConfig } from '../runtime-config';
 export default {
   name:'NewJobModal',
   components:{},
@@ -142,7 +142,7 @@ export default {
       show:true,
       resultStr:'',
       completionStr:'',
-      gistUrl:AppConfig[process.env.NODE_ENV].GIST_URL
+      gistUrl:getConfig().GIST_URL
     }
   }
 

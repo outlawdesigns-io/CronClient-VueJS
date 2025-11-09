@@ -1,22 +1,22 @@
 <template>
   <div>
-    <b-navbar toggleable="lg" type="dark" variant="info">
-      <b-navbar-brand href="#">Cron Monitor</b-navbar-brand>
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-      <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-item v-b-modal.newJobModal>Add a Job</b-nav-item>
-          <b-nav-item v-b-modal.disabledJobsModal>Disabled Jobs</b-nav-item>
-          <b-nav-item v-b-modal.crontabModal>Build a crontab</b-nav-item>
-          <b-nav-item v-b-modal.testCronPatternModal>Test a cron Pattern</b-nav-item>
-          <b-nav-item v-b-modal.subscriptionModal>Manage Subscriptions</b-nav-item>
-          <b-nav-item :href="gistUrl" target="_blank">cronWrapper.sh</b-nav-item>
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item right @click="logout">log out</b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+    <BNavbar toggleable="lg" type="dark" variant="info">
+      <BNavbarBrand href="#">Cron Monitor</BNavbarBrand>
+      <BNavbarToggle target="nav-collapse"></BNavbarToggle>
+      <BCollapse id="nav-collapse" is-nav>
+        <BNavbarNav>
+          <BNavItem v-b-modal.newJobModal>Add a Job</BNavItem>
+          <BNavItem v-b-modal.disabledJobsModal>Disabled Jobs</BNavItem>
+          <BNavItem v-b-modal.crontabModal>Build a crontab</BNavItem>
+          <BNavItem v-b-modal.testCronPatternModal>Test a cron Pattern</BNavItem>
+          <BNavItem v-b-modal.subscriptionModal>Manage Subscriptions</BNavItem>
+          <BNavItem :href="gistUrl" target="_blank">cronWrapper.sh</BNavItem>
+        </BNavbarNav>
+        <BNavbarNav class="ml-auto">
+          <BNavItem right @click="logout">log out</BNavItem>
+        </BNavbarNav>
+      </BCollapse>
+    </BNavbar>
     <NewJobModal></NewJobModal>
     <CrontabModal></CrontabModal>
     <SubscriptionModal></SubscriptionModal>
@@ -27,7 +27,7 @@
 
 <script>
 
-import AppConfig from '../AppConfig';
+import { getConfig } from '../runtime-config';
 import NewJobModal from './NewJobModal.vue';
 import CrontabModal from './CrontabModal.vue';
 import SubscriptionModal from './SubscriptionModal.vue';
@@ -51,7 +51,7 @@ export default {
   },
   data(){
     return {
-      gistUrl:AppConfig[process.env.NODE_ENV].GIST_URL
+      gistUrl:getConfig().GIST_URL
     }
   }
 }

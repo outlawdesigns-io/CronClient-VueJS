@@ -1,6 +1,5 @@
 import { getConfig } from './runtime-config';
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex';
 import VueCookies from 'vue-cookies'
 import {RepositoryFactory} from './api/RepositoryFactory';
 const MessageRepository = RepositoryFactory.get('message');
@@ -20,8 +19,6 @@ const apiLogoutUrl = getConfig().AUTH_LOGOUT_URL;
 
 cronClient.init(apiUrl,apiScope);
 await cronClient.get().auth.init(authUrl,clientId);
-
-Vue.use(Vuex);
 
 const state = {
   isAuthenticated:false,
@@ -311,7 +308,7 @@ const mutations = {
     state.patternTestResults.next = null;
   }
 }
-export default new Vuex.Store({
+export default createStore({
   state,
   actions,
   mutations

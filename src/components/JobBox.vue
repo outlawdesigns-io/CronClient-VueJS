@@ -1,93 +1,143 @@
 <template>
   <div>
-    <b-card no-body class="mb-1" v-bind:class="[isRepollingClass]">
-      <b-card-header header-tag="header" class="p-1" role="tab">
-        <b-button block href="#" v-b-toggle="'accordion-' + job.id" variant="info">
-          <!-- v-on:click="getLastExecution" -->
-          <span class="dot" v-bind:class="[dotClass]"></span>
-          <span style="">{{job.title}} |</span>
-          <CountDownTimer :endDate="nextRun"></CountDownTimer>
-          <span style="">( {{job.friendlyTime}} )</span>
-        </b-button>
-      </b-card-header>
-      <b-collapse :id="'accordion-' + job.id" visible accordion="my-accordion" role="tabpanel">
-        <b-card-body>
-          <!-- <b-card-text>accordion {{job.id}} text</b-card-text> -->
+    <BCard no-body class="mb-1" :class="[isRepollingClass]">
+      <!-- Header slot replaces <b-card-header> -->
+      <template #header>
+        <BButton class="longBtn" block variant="info" @click="toggleCollapse">
+          <span class="dot" :class="[dotClass]"></span>
+          <span>{{ job.title }} | </span>
+          <CountDownTimer :endDate="nextRun" />
+          <span> ( {{ job.friendlyTime }} )</span>
+        </BButton>
+      </template>
+
+      <!-- Collapse section -->
+      <BCollapse :id="'accordion-' + job.id" v-model="isOpen" accordion="my-accordion" role="tabpanel">
+        <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-bordered greyTable">
-              <thead></thead>
+            <table class="table table-bordered table-secondary">
               <tbody>
                 <tr>
-                  <td colspan="3">{{job.description}}</td>
+                  <td colspan="3">{{ job.description }}</td>
                 </tr>
                 <tr>
-                  <td>Hostname: {{job.hostname}}</td>
-                  <td>User: {{job.user}}</td>
-                  <td>Cron Annotation: {{job.cronTime}}</td>
+                  <td>Hostname: {{ job.hostname }}</td>
+                  <td>User: {{ job.user }}</td>
+                  <td>Cron Annotation: {{ job.cronTime }}</td>
                 </tr>
                 <tr>
-                  <td colspan="3">{{job.cmdToExec}}</td>
+                  <td colspan="3">{{ job.cmdToExec }}</td>
                 </tr>
                 <tr>
-                  <td colspan="3">Outfile: {{job.outfile}}</td>
+                  <td colspan="3">Outfile: {{ job.outfile }}</td>
                 </tr>
                 <tr v-if="job.container">
-                  <td colspan="3">Container: {{job.imgName}}</td>
+                  <td colspan="3">Container: {{ job.imgName }}</td>
                 </tr>
-                <!-- <tr v-if="isOverDue">
-                  <td colspan="3">Overdue By: <CountDownTimer :endDate="overDueBy" countUp></CountDownTimer></td>
-                </tr> -->
               </tbody>
             </table>
           </div>
-          <LastExecution v-if="job.lastExecution" v-bind:job="job"></LastExecution>
-          <div v-if="!job.lastExecution">
+
+          <LastExecution v-if="job.lastExecution" :job="job" />
+          <div v-else>
             <p>No execution history for this job</p>
           </div>
+
+          <!-- Action buttons -->
           <div>
-            <b-button id="btnCheckNow" class="longBtn" variant="success" v-if="isRepollDelay || repollOn" v-on:click="checkExecution">Check Now</b-button>
-            <b-button id="btnDisableJob" class="longBtn" variant="warning" @click="onDisable">Disable</b-button>
-            <b-button id="btnDeleteJob" class="longBtn" variant="danger" @click="onDelete">Delete</b-button>
-            <b-overlay :show="confirmDelete" no-wrap>
+            <BButton
+              id="btnCheckNow"
+              class="longBtn"
+              variant="success"
+              v-if="isRepollDelay || repollOn"
+              @click="checkExecution"
+            >
+              Check Now
+            </BButton>
+            <BButton
+              id="btnDisableJob"
+              class="longBtn"
+              variant="warning"
+              @click="onDisable"
+            >
+              Disable
+            </BButton>
+            <BButton
+              id="btnDeleteJob"
+              class="longBtn"
+              variant="danger"
+              @click="onDelete"
+            >
+              Delete
+            </BButton>
+
+            <!-- Delete overlay -->
+            <BOverlay :show="confirmDelete" no-wrap>
               <template #overlay>
                 <div v-if="processingDelete">
-                  <b-icon icon="arrow-clockwise" animation="spin" font-scale="4"></b-icon>
+                  <BSpinner label="Spinning" class="mx-1" />
                   <div class="mb-3">Processing...</div>
                 </div>
                 <div v-else>
                   <p><strong>Delete this job and all execution history?</strong></p>
                   <div class="d-flex">
-                    <b-button variant="outline-danger" class="mr-3" @click="onCancelDelete">Cancel</b-button>
-                    <b-button variant="outline-success" @click="onDeleteConfirm">Confirm</b-button>
+                    <BButton
+                      variant="outline-danger"
+                      class="me-3"
+                      @click="onCancelDelete"
+                    >
+                      Cancel
+                    </BButton>
+                    <BButton
+                      variant="outline-success"
+                      @click="onDeleteConfirm"
+                    >
+                      Confirm
+                    </BButton>
                   </div>
                 </div>
               </template>
-            </b-overlay>
-            <b-overlay :show="confirmDisable" no-wrap>
+            </BOverlay>
+
+            <!-- Disable overlay -->
+            <BOverlay :show="confirmDisable" no-wrap>
               <template #overlay>
                 <div v-if="processingDelete">
-                  <b-icon icon="arrow-clockwise" animation="spin" font-scale="4"></b-icon>
+                  <BSpinner label="Spinning" class="mx-1" />
                   <div class="mb-3">Processing...</div>
                 </div>
                 <div v-else>
                   <p><strong>Disable this job and remove it from reports and apps?</strong></p>
                   <div class="d-flex">
-                    <b-button variant="outline-danger" class="mr-3" @click="onCancelDisable">Cancel</b-button>
-                    <b-button variant="outline-success" @click="onDisableConfirm">Confirm</b-button>
+                    <BButton
+                      variant="outline-danger"
+                      class="me-3"
+                      @click="onCancelDisable"
+                    >
+                      Cancel
+                    </BButton>
+                    <BButton
+                      variant="outline-success"
+                      @click="onDisableConfirm"
+                    >
+                      Confirm
+                    </BButton>
                   </div>
                 </div>
               </template>
-            </b-overlay>
+            </BOverlay>
           </div>
-        </b-card-body>
-      </b-collapse>
-    </b-card>
+        </div>
+      </BCollapse>
+    </BCard>
   </div>
+
 </template>
 
 
 <script>
-
+// import { useStore } from 'vuex';
+import { ref,computed, watch } from 'vue';
 import LastExecution from './LastExecution.vue'
 import CountDownTimer from './CountDownTimer.vue';
 import { DateTime } from 'luxon'
@@ -108,7 +158,8 @@ export default {
       repollOn:false,
       confirmDelete:false,
       confirmDisable:false,
-      processingDelete:false
+      processingDelete:false,
+      isOpen:false
     };
   },
   mounted(){
@@ -148,6 +199,9 @@ export default {
     },
     onCancelDisable(){
       this.confirmDisable = false;
+    },
+    toggleCollapse(){
+      this.isOpen = !this.isOpen;
     }
   },
   computed:{

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import AppConfig from '../AppConfig';
+import { getConfig } from '../runtime-config';
 
 export default {
   name: 'Login',
@@ -22,7 +22,7 @@ export default {
 
   },
   created(){
-    if(AppConfig[process.env.NODE_ENV].AUTH_DISABLED){
+    if(getConfig().AUTH_DISABLED){
       this.$store.dispatch('devInit');
     }else{
       try{

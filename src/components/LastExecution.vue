@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="table table-bordered greyTable">
+    <table class="table table-bordered table-secondary">
       <thead>
         <tr>
           <td colspan="2"><h6>Last Execution</h6></td>
@@ -17,8 +17,8 @@
           </td>
         </tr>
         <tr>
-          <td><b-button @click="copyToClipboard"><b-icon-files></b-icon-files></b-button></td>
-          <td><b-button @click="$store.dispatch('populateSendOutputModal',job)" v-b-modal.sendOutputModal><b-icon-envelope></b-icon-envelope></b-button></td>
+          <td><b-button @click="copyToClipboard"><IBiEnvelope/></b-button></td>
+          <td><b-button @click="$store.dispatch('populateSendOutputModal',job)" v-b-modal.sendOutputModal><IBiFiles/></b-button></td>
         </tr>
       </tbody>
     </table>
