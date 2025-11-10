@@ -1,21 +1,24 @@
-import AppConfig from './AppConfig';
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { getConfig } from './runtime-config';
+import { createStore } from 'vuex';
 import VueCookies from 'vue-cookies'
 import {RepositoryFactory} from './api/RepositoryFactory';
 const MessageRepository = RepositoryFactory.get('message');
 
 import cronClient from  '@outlawdesigns/cronmonitor-rest-client';
-
-const authUrl = `${AppConfig[process.env.NODE_ENV].AUTH_SERVICE_BASE}:${AppConfig[process.env.NODE_ENV].AUTH_SERVICE_PORT}`;
-const apiUrl = `${AppConfig[process.env.NODE_ENV].CRON_SERVICE_BASE}:${AppConfig[process.env.NODE_ENV].CRON_SERVICE_PORT}`;
-
-cronClient.init(apiUrl);
-cronClient.get().auth.init(authUrl);
-
 import router from './Router';
+// import cronClient from '../../CronMonitorRESTClient-JS/index.js';
 
-Vue.use(Vuex);
+console.log(getConfig());
+
+const authUrl = getConfig().AUTH_DISCOVERY_URI;
+const clientId = getConfig().AUTH_CLIENT_ID;
+const apiUrl = getConfig().CRON_SERVICE_BASE;
+const apiScope = getConfig().AUTH_SCOPE;
+const apiRedirectUrl = getConfig().AUTH_REDIRECT_URL;
+const apiLogoutUrl = getConfig().AUTH_LOGOUT_URL;
+
+cronClient.init(apiUrl,apiScope);
+await cronClient.get().auth.init(authUrl,clientId);
 
 const state = {
   isAuthenticated:false,
@@ -39,32 +42,68 @@ const actions = {
     this.dispatch('getEventSubscriptions');
     this.dispatch('getJobs');
   },
-  authenticate({commit},payload){
-    cronClient.get().auth.authenticate(payload.username,payload.password).then((auth_token)=>{
-      VueCookies.set('auth_token',auth_token,200,'/','outlawdesigns.io',true,'Strict');
+  verifyToken({commit}){
+    let tokenSet = VueCookies.get('oathTokenSet');
+    if(tokenSet === null){
+      cronClient.get().auth.authorizationCodeFlow(
+        apiRedirectUrl,
+        apiScope,
+        apiUrl
+      ).then((challengeResults)=>{
+        const verifier = challengeResults.codeVerifier;
+        const state = challengeResults.state;
+        sessionStorage.setItem('oauth_state', state);
+        sessionStorage.setItem('oauth_code_verifier', verifier);
+        // console.log(challengeResults.redirectUri);
+        window.location.href = challengeResults.redirectUri;
+      });
+    }else{
+      cronClient.get().auth.verifyAccessToken(tokenSet.access_token,apiUrl).then((user)=>{
+        cronClient.get().auth.setTokenSet(tokenSet);
+        this.dispatch('init');
+        router.push('/home');
+        //console.log(AppConfig[process.env.NODE_ENV].AUTH_SCOPE);
+        /*cronClient.get().auth.refreshToken(AppConfig[process.env.NODE_ENV].AUTH_SCOPE,apiUrl).then(()=>{
+          VueCookies.set('oathTokenSet',cronClient.get().auth.getTokenSet(),200,'/','localhost',true,'Strict')
+          this.dispatch('init');
+          router.push('/home');
+        }).catch((err)=>{
+          console.log(err);
+          throw err;
+        });*/
+      }).catch((err)=>{
+        console.log(err);
+        //if something authorizationCodeFlow.then();
+        throw err;
+      });
+    }
+  },
+  swapAuthorizationCode({commit},authorizationCode){
+    const state = sessionStorage.getItem('oauth_state');
+    const verifier = sessionStorage.getItem('oauth_code_verifier');
+    let url = new URL(window.location.href);
+    if (!url.pathname.endsWith('/')) {
+      url.pathname += '/';
+    }
+    cronClient.get().auth.completeAuthFlow(url,state,verifier).then(()=>{
+      VueCookies.set('oathTokenSet',cronClient.get().auth.getTokenSet(),200,'/','localhost',true,'Strict');
+      //VueCookies.set('access_token',cronClient.get().auth.getAccessToken(),200,'/','outlawdesigns.io',true,'Strict');
+      // console.log(cronClient.get().auth.getAccessToken());
       this.dispatch('init');
-      router.push('home');
-    }).catch((err)=>{
-      throw new Error(`API ${err.error}`);
+      router.push('/home');
     });
   },
-  verifyToken({commit}){
-    cronClient.get().auth.isTokenValid(VueCookies.get('auth_token')).then((isValid)=>{
-      if(isValid){
-        cronClient.get().setAuthToken(payload.auth_token);
-        if(router.currentRoute.path == '/'){
-          this.dispatch('init');
-          router.push('home');
-        }
-      }
-    }).catch((err)=>{
-      throw new Error(`API ${err.error}`);
+  logout(){
+    //we shouldn't have to remove cookie because token should be invalidated. It's not. What's up with that?
+    // VueCookies.remove('oathTokenSet');
+    cronClient.get().auth.logout(apiLogoutUrl,cronClient.get().auth.getIdToken()).then((redirectUri)=>{
+      window.location.href = redirectUri;
     });
   },
   devInit({commit}){
-    cronClient.get().auth.setAuthToken('12345');
+    cronClient.get().auth.setTokenSet({access_token:'12345678'});
     this.dispatch('init');
-    router.push('home');
+    router.push('/home');
   },
   getJobs(){
     return cronClient.get().jobs.getAll().then((response)=>{
@@ -269,7 +308,7 @@ const mutations = {
     state.patternTestResults.next = null;
   }
 }
-export default new Vuex.Store({
+export default createStore({
   state,
   actions,
   mutations

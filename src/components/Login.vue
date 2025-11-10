@@ -3,18 +3,12 @@
     <div class="imgcontainer">
         <img src="https://loe.outlawdesigns.io/Pictures/error/logo.png" alt="avatar" class="avatar">
     </div>
-    <div class="container">
-        <!-- <h5 style="color:red">{{login.errorMsg}}</h5> -->
-        <label><b>Username:</b></label>
-        <input type="text" class="loginput" v-model="username" required placeholder="Username">
-        <label><b>Password:</b></label>
-        <input type="password" class="loginput" v-model="password" required placeholder="Password">
-        <button v-on:click="login">Login</button>
-    </div>
+    <div class="container"></div>
 </form>
 </template>
 
 <script>
+import { getConfig } from '../runtime-config';
 
 export default {
   name: 'Login',
@@ -22,23 +16,20 @@ export default {
   computed:{},
   data:function(){
     return{
-      username:'',
-      password:''
     }
   },
   methods:{
-    login(event){
-      if(event){
-        event.preventDefault();
-      }
-      this.$store.dispatch('authenticate',{username:this.username,password:this.password});
-    }
+
   },
   created(){
-    if(process.env.NODE_ENV == 'production' && VueCookies.isKey('auth_token')){
-      this.$store.dispatch('verifyToken');
-    }else if(process.env.NODE_ENV != 'production'){
+    if(getConfig().AUTH_DISABLED){
       this.$store.dispatch('devInit');
+    }else{
+      try{
+        this.$store.dispatch('verifyToken');
+      }catch(err){
+        alert(err.message);
+      }
     }
   }
 }

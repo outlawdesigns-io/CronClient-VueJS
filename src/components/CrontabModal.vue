@@ -14,7 +14,7 @@
           <b-form-group id="outputgroup" label="output" label-for="txtAreaCronResults" description="Review and Modify Results">
             <b-form-textarea id="txtAreaCronResults" v-model="cronResults" rows="15"></b-form-textarea>
           </b-form-group>
-          <b-button style="float:right" @click="copyToClipboard"><b-icon-files></b-icon-files></b-button>
+          <b-button style="float:right" @click="copyToClipboard"><IBiFiles/></b-button>
         </div>
         <b-button type="submit" variant="primary">Submit</b-button>
       </b-form>

@@ -1,25 +1,16 @@
 <template>
-  <div id="app">
-    <NavBar v-if="$store.state.isAuthenticated"></NavBar>
-    <router-view></router-view>
-  </div>
+  <BApp>
+    <NavBar v-if="$store.state.isAuthenticated" />
+    <router-view />
+  </BApp>
 </template>
 
-<script>
-
+<script setup>
+import { BApp } from 'bootstrap-vue-next'
 import NavBar from './components/NavBar.vue'
-
-export default {
-  name: 'App',
-  components: {
-    NavBar
-  }
-}
 </script>
 
 <style>
-/* @import'~bootstrap/dist/css/bootstrap.css'; */
-@import '/node_modules/bootstrap/dist/css/bootstrap.css';
 @import './assets/styles/style.css';
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -27,7 +18,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  /* margin-top: 60px; */
 }
 
 </style>

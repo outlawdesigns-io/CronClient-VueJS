@@ -1,8 +1,7 @@
+import { getConfig } from '../runtime-config';
 import Repository from './Repository';
-import AppConfig from '../AppConfig';
 
-// const baseDomain = 'https://api.outlawdesigns.io:9667';
-const baseDomain = `${AppConfig[process.env.NODE_ENV].MSG_SERVICE_BASE}:${AppConfig[process.env.NODE_ENV].MSG_SERVICE_PORT}`;
+const baseDomain = `${getConfig().MSG_SERVICE_BASE}:${getConfig().MSG_SERVICE_PORT}`;
 const baseUrl = `${baseDomain}`;
 const resource = '/send';
 export default {

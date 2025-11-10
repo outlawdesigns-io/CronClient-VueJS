@@ -1,31 +1,18 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 
-
-import VueResource from 'vue-resource'
-
-import {BootstrapVue, BootstrapVueIcons} from "bootstrap-vue"
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-
-import store from './Store';
 import router from './Router';
-import './registerServiceWorker'
+import './registerServiceWorker';
+import { loadRuntimeConfig, getConfig } from './runtime-config';
 
-Vue.use(VueResource)
-
-
-Vue.config.productionTip = false
-Vue.use(BootstrapVue);
-Vue.use(BootstrapVueIcons);
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
 
 
-new Vue({
-  render: h => h(App),
-  store:store,
-  router:router,
-  created(){
-    // this.$store.dispatch('verifyToken',{auth_token:this.$cookies.get('auth_token')})
-    // this.$store.dispatch('getJobs');
-  }
-}).$mount('#app')
+async function bootstrap() {
+  await loadRuntimeConfig();
+  //import store here so config is populated before store tries to access it.
+  const store = await import('./Store').then(m => m.default);
+  const app = createApp(App).use(router).use(store).mount('#app');
+}
+bootstrap();
