@@ -9,13 +9,15 @@ import router from './Router';
 // import cronClient from '../../CronMonitorRESTClient-JS/index.js';
 
 console.log(getConfig());
-
+//oauth2 config
 const authUrl = getConfig().AUTH_DISCOVERY_URI;
 const clientId = getConfig().AUTH_CLIENT_ID;
-const apiUrl = getConfig().CRON_SERVICE_BASE;
 const apiScope = getConfig().AUTH_SCOPE;
 const apiRedirectUrl = getConfig().AUTH_REDIRECT_URL;
 const apiLogoutUrl = getConfig().AUTH_LOGOUT_URL;
+//apis
+const apiUrl = getConfig().CRON_SERVICE_BASE;
+const msgUrl = getConfig().MSG_SERVICE_BASE;
 
 cronClient.init(apiUrl,apiScope);
 await cronClient.get().auth.init(authUrl,clientId);
@@ -48,7 +50,7 @@ const actions = {
       cronClient.get().auth.authorizationCodeFlow(
         apiRedirectUrl,
         apiScope,
-        apiUrl
+        [apiUrl, msgUrl]
       ).then((challengeResults)=>{
         const verifier = challengeResults.codeVerifier;
         const state = challengeResults.state;
@@ -58,7 +60,7 @@ const actions = {
         window.location.href = challengeResults.redirectUri;
       });
     }else{
-      cronClient.get().auth.verifyAccessToken(tokenSet.access_token,apiUrl).then((user)=>{
+      cronClient.get().auth.verifyAccessToken(tokenSet.access_token,[apiUrl, msgUrl]).then((user)=>{
         cronClient.get().auth.setTokenSet(tokenSet);
         this.dispatch('init');
         router.push('/home');

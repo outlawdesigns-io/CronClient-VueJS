@@ -77,7 +77,6 @@ services:
       TZ: America/Chicago
       CRON_SERVICE_BASE: 'https://cronservice.example.com'
       MSG_SERVICE_BASE: 'http://localhost'
-      MSG_SERVICE_PORT: 9667
       AUTH_DISCOVERY_URI: 'https://auth.example.com/.well-known/openid-configuration'
       AUTH_CLIENT_ID: 'cronsuite-vuepwa'
       AUTH_REDIRECT_URL: 'http://localhost:3000/token/'

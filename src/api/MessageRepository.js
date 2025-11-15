@@ -1,16 +1,15 @@
 import { getConfig } from '../runtime-config';
 import Repository from './Repository';
 
-const baseDomain = `${getConfig().MSG_SERVICE_BASE}:${getConfig().MSG_SERVICE_PORT}`;
-const baseUrl = `${baseDomain}`;
+const baseDomain = getConfig().MSG_SERVICE_BASE;
 const resource = '/send';
 export default {
   setDomain(){
-    Repository.defaults.baseURL = baseUrl;
+    Repository.defaults.baseURL = baseDomain;
   },
   setAuthToken(auth_token){
-    Repository.defaults.headers.get['auth_token'] = auth_token;
-    Repository.defaults.headers.post['auth_token'] = auth_token;
+    Repository.defaults.headers.get['Authorization'] = `Bearer ${auth_token}`;
+    Repository.defaults.headers.post['Authorization'] = `Bearer ${auth_token}`;
   },
   send(message){
     this.setDomain();
