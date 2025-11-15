@@ -35,7 +35,7 @@ export default {
         msg_name:'Cron_Ouput',
         to:[this.form.to],
         subject:"Cron output for Job: " + this.$store.state.sendOutputModalData.title,
-        body:this.$store.state.sendOutputModalData.lastExecution.output,
+        body:`<pre>${this.$store.state.sendOutputModalData.lastExecution.output}</pre>`,
         flag:this.$store.state.sendOutputModalData.id + '_' + this.$store.state.sendOutputModalData.lastExecution.id,
         sent_by:'CronClient-App' //maybe should be user id
       };

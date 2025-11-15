@@ -219,7 +219,7 @@ const actions = {
     commit('setSendOutputModalData',job);
   },
   mailOutput({commit},message){
-    MessageRepository.setAuthToken(this.cronClient.get().getAuthToken());
+    MessageRepository.setAuthToken(cronClient.get().auth.getAccessToken());
     return MessageRepository.send(message).then((response)=>{
       if(!response.data['error']){
         commit('setMessageResponse',response.data);

@@ -17,8 +17,8 @@
           </td>
         </tr>
         <tr>
-          <td><b-button @click="copyToClipboard"><IBiEnvelope/></b-button></td>
-          <td><b-button @click="$store.dispatch('populateSendOutputModal',job)" v-b-modal.sendOutputModal><IBiFiles/></b-button></td>
+          <td><b-button @click="copyToClipboard"><IBiFiles/></b-button></td>
+          <td><b-button @click="$store.dispatch('populateSendOutputModal',job)" v-b-modal.sendOutputModal><IBiEnvelope/></b-button></td>
         </tr>
       </tbody>
     </table>
