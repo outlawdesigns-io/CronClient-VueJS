@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 
 import router from './Router';
-import './registerServiceWorker';
 import { loadRuntimeConfig, getConfig } from './runtime-config';
 
 import 'bootstrap/dist/css/bootstrap.css'

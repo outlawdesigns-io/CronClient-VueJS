@@ -1,6 +1,5 @@
 import { getConfig } from './runtime-config';
 import { createStore } from 'vuex';
-import VueCookies from 'vue-cookies'
 import {RepositoryFactory} from './api/RepositoryFactory';
 const MessageRepository = RepositoryFactory.get('message');
 
@@ -45,7 +44,7 @@ const actions = {
     this.dispatch('getJobs');
   },
   verifyToken({commit}){
-    let tokenSet = VueCookies.get('oathTokenSet');
+    let tokenSet = JSON.parse(localStorage.getItem('oathTokenSet'));
     if(tokenSet === null){
       cronClient.get().auth.authorizationCodeFlow(
         apiRedirectUrl,
@@ -64,15 +63,6 @@ const actions = {
         cronClient.get().auth.setTokenSet(tokenSet);
         this.dispatch('init');
         router.push('/home');
-        //console.log(AppConfig[process.env.NODE_ENV].AUTH_SCOPE);
-        /*cronClient.get().auth.refreshToken(AppConfig[process.env.NODE_ENV].AUTH_SCOPE,apiUrl).then(()=>{
-          VueCookies.set('oathTokenSet',cronClient.get().auth.getTokenSet(),200,'/','localhost',true,'Strict')
-          this.dispatch('init');
-          router.push('/home');
-        }).catch((err)=>{
-          console.log(err);
-          throw err;
-        });*/
       }).catch((err)=>{
         console.log(err);
         //if something authorizationCodeFlow.then();
@@ -88,17 +78,14 @@ const actions = {
       url.pathname += '/';
     }
     cronClient.get().auth.completeAuthFlow(url,state,verifier).then(()=>{
-      VueCookies.set('oathTokenSet',cronClient.get().auth.getTokenSet(),200,'/','localhost',true,'Strict');
-      //VueCookies.set('access_token',cronClient.get().auth.getAccessToken(),200,'/','outlawdesigns.io',true,'Strict');
-      // console.log(cronClient.get().auth.getAccessToken());
+      localStorage.setItem('oathTokenSet',JSON.stringify(cronClient.get().auth.getTokenSet()));
       this.dispatch('init');
       router.push('/home');
     });
   },
   logout(){
-    //we shouldn't have to remove cookie because token should be invalidated. It's not. What's up with that?
-    // VueCookies.remove('oathTokenSet');
     cronClient.get().auth.logout(apiLogoutUrl,cronClient.get().auth.getIdToken()).then((redirectUri)=>{
+      localStorage.removeItem('oathTokenSet');
       window.location.href = redirectUri;
     });
   },
