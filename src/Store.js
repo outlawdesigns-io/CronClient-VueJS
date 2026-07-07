@@ -20,6 +20,9 @@ const msgUrl = getConfig().MSG_SERVICE_BASE;
 
 cronClient.init(apiUrl,apiScope);
 await cronClient.get().auth.init(authUrl,clientId);
+cronClient.get().onRefresh((tokenSet)=>{
+  localStorage.setItem('oathTokenSet',JSON.stringify(tokenSet));
+});
 
 const state = {
   isAuthenticated:false,
