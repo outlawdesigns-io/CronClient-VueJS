@@ -67,8 +67,12 @@ const actions = {
         this.dispatch('init');
         router.push('/home');
       }).catch((err)=>{
+        if(err.code === 'ERR_JWT_EXPIRED'){
+          localStorage.removeItem('oathTokenSet');
+          router.push('/');
+          return;
+        }
         console.log(err);
-        //if something authorizationCodeFlow.then();
         throw err;
       });
     }

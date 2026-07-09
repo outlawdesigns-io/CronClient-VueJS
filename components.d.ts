@@ -40,6 +40,8 @@ declare module 'vue' {
     IBi0Envelope: typeof import('~icons/bi/0-envelope')['default']
     IBiEnvelope: typeof import('~icons/bi/envelope')['default']
     IBiFiles: typeof import('~icons/bi/files')['default']
+    IBiMoon: typeof import('~icons/bi/moon')['default']
+    IBiSun: typeof import('~icons/bi/sun')['default']
     JobBox: typeof import('./src/components/JobBox.vue')['default']
     LastExecution: typeof import('./src/components/LastExecution.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']

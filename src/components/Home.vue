@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img alt="Vue logo" src="../assets/turtle_man.png">
+    <img alt="logo" src="../assets/ODLogo.png" class="logo">
     <HelloWorld msg="Cron Monitor"/>
     <p v-if="!jobs.length">Waiting for data...</p>
     <b-spinner v-if="!jobs.length" type="grow" label="Spinning"></b-spinner>
@@ -36,3 +36,11 @@ export default {
   }
 }
 </script>
+
+<style>
+.logo{
+  height:250px;
+  width:250px;
+  margin-top:2%;
+}
+</style>

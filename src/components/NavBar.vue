@@ -12,6 +12,12 @@
           <BNavItem v-b-modal.subscriptionModal>Manage Subscriptions</BNavItem>
           <BNavItem :href="gistUrl" target="_blank">cronWrapper.sh</BNavItem>
         </BNavbarNav>
+        <BNavbarNav class="ms-auto mb-2 mb-lg-0">
+          <BNavItem right @click="swapTheme()">
+            <IBiMoon v-if="mode == 'light'" />
+            <IBiSun v-if="mode == 'dark'" />
+          </BNavItem>
+        </BNavbarNav>
         <BNavbarNav class="ml-auto">
           <BNavItem right @click="logout">log out</BNavItem>
         </BNavbarNav>
@@ -28,6 +34,7 @@
 <script>
 
 import { getConfig } from '../runtime-config';
+import { useColorMode } from 'bootstrap-vue-next'
 import NewJobModal from './NewJobModal.vue';
 import CrontabModal from './CrontabModal.vue';
 import SubscriptionModal from './SubscriptionModal.vue';
@@ -47,11 +54,15 @@ export default {
   methods:{
     logout(){
       this.$store.dispatch('logout');
+    },
+    swapTheme(){
+      this.mode = this.mode === 'dark' ? 'light' : 'dark'
     }
   },
   data(){
     return {
-      gistUrl:getConfig().GIST_URL
+      gistUrl:getConfig().GIST_URL,
+      mode:useColorMode()
     }
   }
 }
