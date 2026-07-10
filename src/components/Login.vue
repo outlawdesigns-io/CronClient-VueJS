@@ -21,14 +21,19 @@ export default {
   methods:{
 
   },
-  created(){
+  async created(){
     if(getConfig().AUTH_DISABLED){
       this.$store.dispatch('devInit');
     }else{
       try{
-        this.$store.dispatch('verifyToken');
+        await this.$store.dispatch('verifyToken');
       }catch(err){
-        alert(err.message);
+        if(err.code === 'ERR_JWT_EXPIRED'){
+          localStorage.removeItem('oathTokenSet');
+          await this.$store.dispatch('verifyToken');
+        }else{
+          alert(err.message);  
+        }
       }
     }
   }

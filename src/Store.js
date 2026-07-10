@@ -46,10 +46,10 @@ const actions = {
     this.dispatch('getEventSubscriptions');
     this.dispatch('getJobs');
   },
-  verifyToken({commit}){
+  async verifyToken({commit}){
     let tokenSet = JSON.parse(localStorage.getItem('oathTokenSet'));
     if(tokenSet === null){
-      cronClient.get().auth.authorizationCodeFlow(
+      return cronClient.get().auth.authorizationCodeFlow(
         apiRedirectUrl,
         apiScope,
         [apiUrl, msgUrl]
@@ -62,18 +62,10 @@ const actions = {
         window.location.href = challengeResults.redirectUri;
       });
     }else{
-      cronClient.get().auth.verifyAccessToken(tokenSet.access_token,[apiUrl, msgUrl]).then((user)=>{
+      return cronClient.get().auth.verifyAccessToken(tokenSet.access_token,[apiUrl, msgUrl]).then((user)=>{
         cronClient.get().auth.setTokenSet(tokenSet);
         this.dispatch('init');
         router.push('/home');
-      }).catch((err)=>{
-        if(err.code === 'ERR_JWT_EXPIRED'){
-          localStorage.removeItem('oathTokenSet');
-          router.push('/');
-          return;
-        }
-        console.log(err);
-        throw err;
       });
     }
   },
